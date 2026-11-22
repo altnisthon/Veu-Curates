@@ -47,51 +47,80 @@ export default function Explore() {
 
   const tryCount = list.filter((r) => r.fit).length;
 
+  const tryRows = list.filter((r) => r.fit);
+  const soonRows = list.filter((r) => !r.fit);
+  const TONE = { 'Strong match': 'strong', Wearable: 'wearable', 'Not your best': 'low' };
+
+  const row = ({ p, fit }) => (
+    <li key={p.id}>
+      <div className="cu-grow cu-grow--static">
+        <span className="cu-gtile" aria-hidden="true">
+          <span className={`cu-gswatch${p.hex ? '' : ' cu-prod__swatch--none'}`} style={p.hex ? { background: p.hex } : undefined} />
+        </span>
+        <span className="cu-gtext">
+          <span className="cu-gtitle">{p.shade}</span>
+          <span className="cu-gsub">{p.brand} · {p.name}</span>
+          <span className="cu-gsub cu-gsub--meta">{AREA_WORD[p.area]}{p.price ? ` · ${p.price}` : ''}</span>
+        </span>
+        {fit ? (
+          <>
+            <span className={`cu-fitcap cu-fitcap--${TONE[fit.verdict]}`} title={`${fit.verdict}, fit ${fit.score} out of 100`}>{fit.score}</span>
+            <Link to={`/studio?product=${encodeURIComponent(p.id)}`} className="cu-trybtn" aria-label={`Try ${p.brand} ${p.shade} on in Studio`}>Try</Link>
+          </>
+        ) : (
+          <span className="cu-soon">Soon</span>
+        )}
+      </div>
+    </li>
+  );
+
   return (
     <div className="cu-screen">
       <ScreenHeader trail={[{ label: 'Explore', to: '/explore' }]} />
-      <div className="cu-pad cu-gap-l">
-        <div className="cu-gap-s">
+      <div className="cu-explore">
+        <div className="cu-pad-x cu-gap-s">
           <h1>Explore</h1>
-          <p className="cu-muted">Lip colours, blushes and eyeshadows. Try any with a colour on the face in Studio.</p>
+          <p className="cu-muted">Lip colours, blushes and eyeshadows. Try any with a swatch on her face in Studio.</p>
         </div>
 
-        <div className="cu-gap-s">
-          <label className="cu-search">
+        <div className="cu-explore__controls">
+          <label className="cu-isearch">
             <span className="sr-only">Search products</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
-            <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search brand or shade" autoComplete="off" />
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
+            <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search brand or shade" autoComplete="off" enterKeyHint="search" />
+            {q && (
+              <button type="button" className="cu-isearch__clear" onClick={() => setQ('')} aria-label="Clear search">
+                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="currentColor" /><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" /></svg>
+              </button>
+            )}
           </label>
-          <div className="cu-pills cu-pills--start" role="group" aria-label="Filter by area">
+          <div className="cu-capsules" role="group" aria-label="Filter by area">
             {FILTERS.map((f) => (
-              <button key={f.id} type="button" className={`cu-pill-btn${area === f.id ? ' is-on' : ''}`} aria-pressed={area === f.id}
+              <button key={f.id} type="button" className={`cu-capsule${area === f.id ? ' is-on' : ''}`} aria-pressed={area === f.id}
                 onClick={() => setParams(f.id === 'all' ? {} : { area: f.id }, { replace: true })}>{f.label}</button>
             ))}
           </div>
-          <p className="cu-fine" aria-live="polite">{list.length} products, {tryCount} you can try on. Colours are placeholders until our swatch research is in.</p>
         </div>
 
-        <ul className="cu-explore__list">
-          {list.map(({ p, fit }) => (
-            <li key={p.id} className="cu-prod cu-prod--static">
-              <span className="cu-prod__tile">
-                <span className={`cu-prod__swatch${p.hex ? '' : ' cu-prod__swatch--none'}`} style={p.hex ? { background: p.hex } : undefined} />
-              </span>
-              <span className="cu-prod__text">
-                <span className="cu-prod__brand">{p.brand} · {AREA_WORD[p.area]}</span>
-                <span className="cu-prod__name">{p.name}</span>
-                <span className="cu-prod__shade">{p.shade}{p.price ? ` · ${p.price}` : ''}</span>
-                {fit && <span className="cu-prod__verdict cu-prod__verdict--inline">{fit.verdict} for you · {fit.score}</span>}
-              </span>
-              {fit ? (
-                <Link to={`/studio?product=${encodeURIComponent(p.id)}`} className="cu-trybtn">Try on</Link>
-              ) : (
-                <span className="cu-tag cu-tag--quiet">Swatch soon</span>
-              )}
-            </li>
-          ))}
-        </ul>
-        {list.length === 0 && <p className="cu-muted">Nothing matches that. Try another brand or shade name.</p>}
+        <div className="cu-pad-x">
+          {tryRows.length > 0 && (
+            <section>
+              <h2 className="cu-glabel">Try on her · best for you first</h2>
+              <ul className="cu-group">{tryRows.map(row)}</ul>
+            </section>
+          )}
+          {soonRows.length > 0 && (
+            <section>
+              <h2 className="cu-glabel">Swatch coming soon</h2>
+              <ul className="cu-group">{soonRows.map(row)}</ul>
+            </section>
+          )}
+          {list.length === 0 && <p className="cu-pm__none">Nothing matches “{q}”. Try another brand or shade name.</p>}
+          <p className="cu-gfoot" aria-live="polite">
+            {list.length} products, {tryCount} you can try on. The score is out of 100: how well each one, as it looks on you, suits your lean.
+            Colours are placeholders until our swatch research is in.
+          </p>
+        </div>
       </div>
     </div>
   );

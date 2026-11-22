@@ -181,7 +181,7 @@ export default function Studio() {
               <button key={a.id} type="button" className={`cu-pill-btn${area === a.id ? ' is-on' : ''}`} aria-pressed={area === a.id} onClick={() => pickArea(a.id)}>{a.label}</button>
             ))}
           </div>
-  {!area && <p className="cu-fine cu-center cu-studio-hint">Tap lips, cheeks or eyes, then choose a product to try on her.</p>}
+          {!area && <p className="cu-fine cu-center cu-studio-hint">Tap lips, cheeks or eyes, then choose a product to try on her.</p>}
         </div>
 
         <div className="cu-pad-x">
@@ -194,47 +194,59 @@ export default function Studio() {
         {/* the product */}
         <section className="cu-pad-x" aria-labelledby="shade-name">
           {shade ? (
-            <div className="glass cu-shadecard">
-              <div className="cu-shadecard__head">
-                <span className="cu-prod__tile cu-prod__tile--lg"><span className="cu-prod__swatch" style={{ background: shade.hex }} /></span>
-                <div className="cu-shadecard__titles">
+            <>
+              <div className="glass cu-phead">
+                <span className="cu-gtile cu-gtile--lg" aria-hidden="true"><span className="cu-gswatch cu-gswatch--lg" style={{ background: shade.hex }} /></span>
+                <div className="cu-phead__text">
                   <span className="cu-eyebrow">{shade.brand}</span>
-                  <h2 id="shade-name" className="cu-shadecard__name">{shade.name}</h2>
-                  <span className="cu-shadecard__sub">{shade.shade} · {FINISHES[fin]}</span>
+                  <h2 id="shade-name" className="cu-phead__name">{shade.name}</h2>
+                  <span className="cu-phead__sub">{shade.shade} · {FINISHES[fin]}</span>
+                  <span className="cu-tag cu-tag--quiet cu-phead__tag">Placeholder colour</span>
                 </div>
-              </div>
-              <div className="cu-shadecard__actions">
-                <span className="cu-tag cu-tag--quiet">Placeholder colour</span>
-                {shade.price && <span className="cu-fine">{shade.price}{shade.where ? ` · ${shade.where}` : ''}</span>}
+                <button type="button" className="cu-capsule cu-capsule--tint" onClick={() => setMenuOpen(true)}>Change</button>
               </div>
 
-              <div className="cu-fit">
-                <div className="cu-fit__row">
-                  <span className="cu-fit__verdict">{fit.verdict} for {leanWord}</span>
-                  <span className="cu-fit__score">{fit.score}</span>
+              <h3 className="cu-glabel">Fit for {leanWord}</h3>
+              <div className="cu-group">
+                <div className="cu-gcell cu-fitcell">
+                  <div className="cu-fit__row">
+                    <span className={`cu-fit__verdict cu-fit__verdict--${fit.score >= 75 ? 'strong' : fit.score >= 55 ? 'wearable' : 'low'}`}>{fit.verdict}</span>
+                    <span className="cu-fit__score">{fit.score}</span>
+                  </div>
+                  <div className="cu-fit__bar" aria-hidden="true"><span style={{ width: `${fit.score}%` }} /></div>
+                  <p className="cu-fit__reason">{fit.reason}</p>
                 </div>
-                <div className="cu-fit__bar" aria-hidden="true"><span style={{ width: `${fit.score}%` }} /></div>
-                <p className="cu-fit__reason">{fit.reason}</p>
-                <p className="cu-fine">Fit score out of 100: how well this shade, as it looks on you, suits {leanWord} and the look you picked.</p>
-                {!lean && <Link to="/undertone" className="cu-link">Pick your undertone for a truer score</Link>}
               </div>
-              <div className="cu-shadecard__buttons">
-                <button type="button" className="btn-tint cu-btn" onClick={() => setMenuOpen(true)}>Try another {AREA_PRODUCT[area]}</button>
-                {shade.link && (
-                  <a href={shade.link} target="_blank" rel="noopener noreferrer" className="cu-link cu-center"
-                    onClick={() => track('product_clicked', { product_key: shade.id, brand: shade.brand, shade: shade.shade, from: 'studio' })}>
-                    Where to buy
-                  </a>
-                )}
-              </div>
-            </div>
+              <p className="cu-gfoot">
+                Fit score out of 100: how well this shade, as it looks on you, suits {leanWord} and the look you picked.
+                {!lean && <> <Link to="/undertone">Pick your undertone</Link> for a truer score.</>}
+              </p>
+
+              {shade.link && (
+                <ul className="cu-group cu-group--spaced">
+                  <li>
+                    <a href={shade.link} target="_blank" rel="noopener noreferrer" className="cu-grow cu-grow--link"
+                      onClick={() => track('product_clicked', { product_key: shade.id, brand: shade.brand, shade: shade.shade, from: 'studio' })}>
+                      <span className="cu-gtext">
+                        <span className="cu-gtitle">Where to buy</span>
+                        <span className="cu-gsub">{[shade.price, shade.where].filter(Boolean).join(' · ')}</span>
+                      </span>
+                      <svg className="cu-chev" width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6" /></svg>
+                    </a>
+                  </li>
+                </ul>
+              )}
+            </>
           ) : (
-            <div className="glass cu-card cu-gap-s">
-              <h2 id="shade-name" className="cu-shadecard__name">Choose a {AREA_PRODUCT[area]}</h2>
-              <p className="cu-muted">
+            <div className="glass cu-choose">
+              <span className="cu-choose__icon" aria-hidden="true">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3.5c3 4 6 7.2 6 10.5a6 6 0 0 1-12 0c0-3.3 3-6.5 6-10.5z" /></svg>
+              </span>
+              <h2 id="shade-name" className="cu-choose__title">Choose a {AREA_PRODUCT[area]}</h2>
+              <p className="cu-choose__text">
                 {tryable(area).length
-                  ? `Pick from ${tryable(area).length} ${AREA_PRODUCT[area]}s and see it on her, sorted by how well it suits you.`
-                  : `${AREA_PRODUCT[area][0].toUpperCase() + AREA_PRODUCT[area].slice(1)} swatches are coming soon, so there's nothing to try on yet.`}
+                  ? `${tryable(area).length} to try on her, sorted by how well each suits you.`
+                  : `${AREA_PRODUCT[area][0].toUpperCase() + AREA_PRODUCT[area].slice(1)} swatches are on their way, so there's nothing to try on yet.`}
               </p>
               {tryable(area).length
                 ? <button type="button" className="btn-primary cu-btn" onClick={() => setMenuOpen(true)}>Choose a product</button>
@@ -243,41 +255,40 @@ export default function Studio() {
           )}
         </section>
 
-        {shade && (<>
-        {/* application */}
-        <section className="cu-pad-x cu-gap-s" aria-labelledby="application">
-          <h2 id="application" className="cu-section-label">Application</h2>
-          <div className="glass cu-appcard">
-            <div className="cu-approw">
-              <span className="cu-approw__label">Finish</span>
+        {shade && (
+        <section className="cu-pad-x" aria-labelledby="application">
+          <h3 id="application" className="cu-glabel">Application</h3>
+          <ul className="cu-group">
+            <li className="cu-gcell cu-gcell--row">
+              <span className="cu-gcell__label">Finish</span>
               <Segmented label="Finish" options={FINISHES} value={fin} onChange={pickFinish} />
-            </div>
-            <div className="cu-approw">
-              <span className="cu-approw__label">Look</span>
+            </li>
+            <li className="cu-gcell cu-gcell--row">
+              <span className="cu-gcell__label">Look</span>
               <Segmented label="Look" options={LOOKS} value={look} onChange={pickLook} />
-            </div>
-          </div>
-          <p className="cu-fine cu-pad-note">Finish changes how much colour shows. Look is the effect you're going for, and it shapes the fit score.</p>
+            </li>
+          </ul>
+          <p className="cu-gfoot">Finish changes how much colour shows. Look is the effect you're going for, and it shapes the fit score.</p>
         </section>
-        </>)}
+        )}
         </>)}
 
         {/* your face */}
-        <section className="cu-pad-x cu-gap-s" aria-labelledby="your-face">
-          <h2 id="your-face" className="cu-section-label">Your face</h2>
-          <div className="glass cu-facecard cu-tone">
+        <section className="cu-pad-x" aria-labelledby="your-face">
+          <h3 id="your-face" className="cu-glabel">Your face</h3>
+          <div className="cu-group cu-tone">
             <Segmented label="Choose skin or lips" options={['Skin', 'Lips']} value={wheelPart === 'skin' ? 0 : 1} onChange={(i) => setWheelPart(i ? 'lips' : 'skin')} />
             <ToneWheel key={wheelPart} part={wheelPart} label={wheelPart === 'skin' ? 'Skin' : 'Lips'} pos={posOf(wheelPart)}
               onChange={(p) => change(wheelPart, 'wheel', wheelPart === 'skin' ? { skin: p, skinHex: null } : { lips: p, lipHex: null })} />
             <ToneReadout label={wheelPart === 'skin' ? 'Skin' : 'Lips'} hex={user[wheelPart]} pos={posOf(wheelPart)}
               onHex={(h) => change(wheelPart, 'hex', wheelPart === 'skin' ? { skinHex: h, skin: null } : { lipHex: h, lips: null })} />
           </div>
-          <p className="cu-fine cu-pad-note">
+          <p className="cu-gfoot">
             Drag across the wheel: left is cooler, right is warmer, up is lighter, down is deeper. Stop where the face looks like you.
             VEU clients will start from the skin colour measured at their consultation.
           </p>
           {custom && (
-            <button type="button" className="cu-textbtn cu-pad-note" onClick={() => change('both', 'reset', { ...EMPTY_TONE })}>
+            <button type="button" className="cu-textbtn cu-gfoot-btn" onClick={() => change('both', 'reset', { ...EMPTY_TONE })}>
               Reset to her colouring
             </button>
           )}
@@ -286,21 +297,20 @@ export default function Studio() {
         {/* the science */}
         {shade && (
         <section className="cu-pad-x">
-          <div className="glass cu-sci">
-            <button type="button" className="cu-sci__toggle" aria-expanded={sciOpen} aria-controls="sci-panel" onClick={() => setSciOpen((o) => !o)}>
-              <span>The science</span>
-              <span className="cu-sci__hint">{sciOpen ? 'Hide' : 'Show'}</span>
+          <div className="cu-group cu-group--spaced">
+            <button type="button" className="cu-grow cu-disclosure" aria-expanded={sciOpen} aria-controls="sci-panel" onClick={() => setSciOpen((o) => !o)}>
+              <span className="cu-gtext"><span className="cu-gtitle">The science</span><span className="cu-gsub">The numbers behind {shade.shade} on you</span></span>
+              <svg className="cu-chev" width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6" /></svg>
             </button>
             {sciOpen && (
-              <div id="sci-panel" className="cu-sci__panel">
-                <p className="cu-fine">The numbers behind {shade.shade} as it looks on you ({per}).</p>
+              <ul id="sci-panel" className="cu-sci-list">
                 {science.map((r) => (
-                  <div key={r.label} className="cu-sci__row">
+                  <li key={r.label} className="cu-gcell cu-sci-row">
                     <div className="cu-sci__top"><span>{r.label}</span><span className="cu-sci__val">{r.value}</span></div>
                     <span className="cu-sci__note">{r.note}</span>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
           </div>
         </section>

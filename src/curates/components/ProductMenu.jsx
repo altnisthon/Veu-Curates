@@ -13,16 +13,16 @@ const TONE = { 'Strong match': 'strong', Wearable: 'wearable', 'Not your best': 
 function Row({ p, fit, selected, onPick }) {
   return (
     <li>
-      <button type="button" className={`cu-pm__row${selected ? ' is-on' : ''}`} aria-pressed={selected} onClick={() => onPick(p)}
+      <button type="button" className={`cu-grow${selected ? ' is-on' : ''}`} aria-pressed={selected} onClick={() => onPick(p)}
         aria-label={`${p.brand} ${p.name}, ${p.shade}. ${fit.verdict}, fit ${fit.score} out of 100`}>
         {/* neutral tile so the product colour reads true */}
-        <span className="cu-pm__tile" aria-hidden="true"><span className="cu-pm__swatch" style={{ background: p.hex }} /></span>
-        <span className="cu-pm__text">
-          <span className="cu-pm__shade">{p.shade}</span>
-          <span className="cu-pm__product">{p.brand} · {p.name}</span>
+        <span className="cu-gtile" aria-hidden="true"><span className="cu-gswatch" style={{ background: p.hex }} /></span>
+        <span className="cu-gtext">
+          <span className="cu-gtitle">{p.shade}</span>
+          <span className="cu-gsub">{p.brand} · {p.name}</span>
         </span>
-        <span className={`cu-pm__fit cu-pm__fit--${TONE[fit.verdict]}`} aria-hidden="true">{fit.score}</span>
-        <span className="cu-pm__check" aria-hidden="true">
+        <span className={`cu-fitcap cu-fitcap--${TONE[fit.verdict]}`} aria-hidden="true">{fit.score}</span>
+        <span className="cu-gcheck" aria-hidden="true">
           {selected && <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>}
         </span>
       </button>
@@ -34,8 +34,8 @@ function Group({ title, rows, selectedId, onPick }) {
   if (!rows.length) return null;
   return (
     <section className="cu-pm__section">
-      <h3 className="cu-pm__label">{title}</h3>
-      <ul className="cu-pm__group">
+      <h3 className="cu-glabel">{title}</h3>
+      <ul className="cu-group">
         {rows.map(({ p, fit }) => <Row key={p.id} p={p} fit={fit} selected={p.id === selectedId} onPick={onPick} />)}
       </ul>
     </section>
@@ -85,20 +85,20 @@ export default function ProductMenu({ open, onClose, area, selectedId, scoreFor,
 
           {all.length > 0 && (
             <>
-              <label className="cu-pm__search">
+              <label className="cu-isearch">
                 <span className="sr-only">Search {what}s</span>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
                 <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search" autoComplete="off" enterKeyHint="search" />
                 {q && (
-                  <button type="button" className="cu-pm__clear" onClick={() => setQ('')} aria-label="Clear search">
+                  <button type="button" className="cu-isearch__clear" onClick={() => setQ('')} aria-label="Clear search">
                     <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="currentColor" /><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" /></svg>
                   </button>
                 )}
               </label>
 
-              <div className="cu-pm__capsules" role="group" aria-label="Filter by brand">
+              <div className="cu-capsules" role="group" aria-label="Filter by brand">
                 {['all', ...brands].map((b) => (
-                  <button key={b} type="button" className={`cu-pm__capsule${brand === b ? ' is-on' : ''}`} aria-pressed={brand === b} onClick={() => setBrand(b)}>
+                  <button key={b} type="button" className={`cu-capsule${brand === b ? ' is-on' : ''}`} aria-pressed={brand === b} onClick={() => setBrand(b)}>
                     {b === 'all' ? 'All' : b}
                   </button>
                 ))}
