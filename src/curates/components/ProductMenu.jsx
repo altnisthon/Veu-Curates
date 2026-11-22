@@ -149,7 +149,6 @@ export default function ProductMenu({ open, onClose, area, selectedId, scoreFor,
               {rows.length === 0 && <p className="cu-pm__none">No {what}s match “{q}”.</p>}
               <p className="cu-pm__foot" aria-live="polite">
                 {rows.length} {rows.length === 1 ? 'result' : 'results'}. The score is out of 100: how well each one, as it looks on you, suits your lean.
-                Colours are placeholders until our swatch research is in.
               </p>
             </>
           )}

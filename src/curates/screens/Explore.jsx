@@ -118,7 +118,6 @@ export default function Explore() {
           {list.length === 0 && <p className="cu-pm__none">Nothing matches “{q}”. Try another brand or shade name.</p>}
           <p className="cu-gfoot" aria-live="polite">
             {list.length} products, {tryCount} you can try on. The score is out of 100: how well each one, as it looks on you, suits your lean.
-            Colours are placeholders until our swatch research is in.
           </p>
         </div>
       </div>

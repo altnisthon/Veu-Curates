@@ -229,7 +229,6 @@ export default function Studio() {
                   <span className="cu-eyebrow">{shade.brand}</span>
                   <h2 id="shade-name" className="cu-phead__name">{shade.name}</h2>
                   <span className="cu-phead__sub">{shade.shade} · {FINISHES[fin]}</span>
-                  <span className="cu-tag cu-tag--quiet cu-phead__tag">Placeholder colour</span>
                 </div>
                 <button type="button" className="cu-capsule cu-capsule--tint" onClick={() => setMenuOpen(true)}>Change</button>
               </div>
