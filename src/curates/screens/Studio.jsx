@@ -38,22 +38,42 @@ function Segmented({ label, options, value, onChange }) {
   );
 }
 
-// The readout under the wheel: swatch, plain-English reading and an editable colour code.
+// The readout under the wheel: swatch, plain-English reading, and an editable colour code with an info tooltip
+// explaining that people can type their own hex code (for example the one from their VEU consultation).
 function ToneReadout({ label, hex, pos, onHex }) {
   const [text, setText] = useState(hex);
+  const [tip, setTip] = useState(false);
+  const tipRef = useRef(null);
   useEffect(() => { setText(hex); }, [hex]);
+  useEffect(() => {
+    if (!tip) return undefined;
+    const close = (e) => { if (e.type === 'keydown' ? e.key === 'Escape' : !tipRef.current?.contains(e.target)) setTip(false); };
+    document.addEventListener('pointerdown', close);
+    document.addEventListener('keydown', close);
+    return () => { document.removeEventListener('pointerdown', close); document.removeEventListener('keydown', close); };
+  }, [tip]);
   const commit = () => {
     const h = normaliseHex(text);
     if (h && h !== hex) onHex(h); else setText(hex);
   };
   const words = describe(pos);
+  const id = `hex-tip-${label.toLowerCase()}`;
   return (
-    <div className="cu-facerow__top cu-tone__readout">
-      <span className="cu-facerow__dot" style={{ background: hex }} aria-hidden="true" />
-      <span className="cu-facerow__label">{label} <span className="cu-tone__words">{words.undertone} · {words.depth}</span></span>
-      <input type="text" className="cu-facerow__hex" value={text} spellCheck="false" autoCapitalize="characters" maxLength={7}
-        aria-label={`${label} colour code`} onChange={(e) => setText(e.target.value)} onBlur={commit}
-        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commit(); e.currentTarget.blur(); } }} />
+    <div className="cu-tone__readout">
+      <span className="cu-tone__dot" style={{ background: hex }} aria-hidden="true" />
+      <span className="cu-tone__name">{label}<span className="cu-tone__words">{words.undertone} · {words.depth}</span></span>
+      <div className="cu-tone__code" ref={tipRef}>
+        <input type="text" className="cu-tone__hex" value={text} spellCheck="false" autoCapitalize="characters" maxLength={7} inputMode="text"
+          aria-label={`${label} colour code`} aria-describedby={id} onChange={(e) => setText(e.target.value)} onBlur={commit}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commit(); e.currentTarget.blur(); } }} />
+        <button type="button" className="cu-tone__info" aria-label="About colour codes" aria-expanded={tip} aria-controls={id} onClick={() => setTip((t) => !t)}>
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" strokeWidth="1.5" /><circle cx="10" cy="6.4" r="1.1" fill="currentColor" /><path d="M10 9v5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+        </button>
+        <div id={id} role="tooltip" className={`cu-tip${tip ? ' is-open' : ''}`}>
+          <strong>Know your exact colour?</strong>
+          Tap the code and type your own hex, like #C68D6E, then press return. VEU clients can use the {label.toLowerCase()} code from their consultation.
+        </div>
+      </div>
     </div>
   );
 }

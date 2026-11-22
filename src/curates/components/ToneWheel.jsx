@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { clampToDisc, describe, wheelToHex } from '../lib/tone';
 
-const SIZE = 232; // CSS px
+const SIZE = 232; // largest size in CSS px; the wheel shrinks on narrow screens (see .cu-wheel__disc)
 const STEP = 0.05;
 
 export default function ToneWheel({ part, label, pos, onChange, onRelease }) {
@@ -66,9 +66,9 @@ export default function ToneWheel({ part, label, pos, onChange, onRelease }) {
       <span className="cu-wheel__axis cu-wheel__axis--top" aria-hidden="true">Light</span>
       <div className="cu-wheel__row">
         <span className="cu-wheel__axis" aria-hidden="true">Cool</span>
-        <div ref={disc} className="cu-wheel__disc" style={{ width: SIZE, height: SIZE }}
+        <div ref={disc} className="cu-wheel__disc"
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
-          <canvas ref={canvas} className="cu-wheel__canvas" style={{ width: SIZE, height: SIZE }} aria-hidden="true" />
+          <canvas ref={canvas} className="cu-wheel__canvas" aria-hidden="true" />
           <span className="cu-wheel__cross" aria-hidden="true" />
           <span role="slider" tabIndex={0} className="cu-wheel__knob"
             aria-label={`${label} tone. Left and right arrows: cooler or warmer. Up and down arrows: lighter or deeper.`}
