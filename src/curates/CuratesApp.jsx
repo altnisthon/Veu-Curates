@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-route
 import '../styles/tokens.css';
 import './curates.css';
 import { Orbs, TabBar } from './components/Chrome';
+import Shimmer from './components/Shimmer';
 import { PrefsContext, usePrefsState } from './lib/prefs';
 import Home from './screens/Home';
 import Undertone from './screens/Undertone';
@@ -20,7 +21,7 @@ function Shell() {
 
   return (
     <div className="cu-app">
-      <Orbs />
+      {pathname === '/studio' ? <Shimmer /> : <Orbs />}
       <main ref={scroller} className={`cu-scroll${NO_TABBAR.includes(pathname) ? ' cu-scroll--full' : ''}`}>
         {/* key on path so each screen gets the entrance transition */}
         <div key={pathname} className="cu-page">
