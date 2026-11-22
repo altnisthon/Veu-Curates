@@ -178,20 +178,26 @@
 .cu-seg button::before { content: ''; position: absolute; inset: -4px 0; } /* 44px hit area */
 .cu-seg button.is-on { background: #fff; color: var(--veu-crimson); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 
-/* Studio backdrop: minimal holographic in VEU colours. Cream base, soft drifting brand light,
-   and a pearly sheen that slowly shifts, like light moving over a holographic foil. */
+/* Studio backdrop: holographic foil in VEU colours, kept minimal (no sparkles or shapes).
+   1. cream base   2. drifting brand light   3. iridescent foil bands sliding diagonally   4. pearly sheen the other way */
 .cu-shimmer { position: absolute; inset: 0; overflow: hidden; pointer-events: none;
-  background: linear-gradient(165deg, #FDF8F5 0%, #F8E6E2 40%, #F1ECE3 72%, #FDF8F5 100%); }
-.cu-shimmer__holo { position: absolute; inset: -25%; animation: cu-holo 28s ease-in-out infinite alternate;
+  background: linear-gradient(165deg, #FDF8F5 0%, #F6DFDA 38%, #EFE7DA 70%, #FBF1EC 100%); }
+.cu-shimmer__holo { position: absolute; inset: -25%; animation: cu-holo 22s ease-in-out infinite alternate;
   background:
-    radial-gradient(42% 34% at 22% 18%, rgba(241, 186, 179, 0.85), rgba(241, 186, 179, 0) 70%),
-    radial-gradient(38% 30% at 82% 40%, rgba(215, 92, 97, 0.28), rgba(215, 92, 97, 0) 70%),
-    radial-gradient(40% 32% at 26% 72%, rgba(129, 163, 87, 0.18), rgba(129, 163, 87, 0) 70%),
-    radial-gradient(44% 34% at 78% 84%, rgba(232, 227, 216, 0.95), rgba(232, 227, 216, 0) 70%); }
-@keyframes cu-holo { 0% { transform: translate(0, 0) rotate(0deg) scale(1); } 100% { transform: translate(4%, -3%) rotate(8deg) scale(1.06); } }
-.cu-shimmer__sheen { position: absolute; inset: 0; opacity: 0.7; background-size: 300% 300%; animation: cu-sheen 18s ease-in-out infinite alternate;
-  background-image: linear-gradient(115deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.55) 42%, rgba(241, 186, 179, 0.35) 50%, rgba(232, 227, 216, 0.45) 58%, rgba(255, 255, 255, 0) 70%); }
-@keyframes cu-sheen { from { background-position: 0% 40%; } to { background-position: 100% 60%; } }
+    radial-gradient(42% 34% at 22% 18%, rgba(241, 186, 179, 0.95), rgba(241, 186, 179, 0) 70%),
+    radial-gradient(38% 30% at 82% 38%, rgba(215, 92, 97, 0.38), rgba(215, 92, 97, 0) 70%),
+    radial-gradient(40% 32% at 24% 70%, rgba(129, 163, 87, 0.26), rgba(129, 163, 87, 0) 70%),
+    radial-gradient(44% 34% at 78% 84%, rgba(232, 227, 216, 1), rgba(232, 227, 216, 0) 70%); }
+@keyframes cu-holo { 0% { transform: translate(0, 0) rotate(0deg) scale(1); } 100% { transform: translate(6%, -4%) rotate(12deg) scale(1.08); } }
+.cu-shimmer__foil { position: absolute; inset: 0; opacity: 0.55; background-size: 260% 260%; animation: cu-foil 16s ease-in-out infinite alternate;
+  background-image: linear-gradient(125deg,
+    rgba(241, 186, 179, 0) 0%, rgba(241, 186, 179, 0.9) 12%, rgba(232, 227, 216, 0.9) 22%, rgba(215, 92, 97, 0.45) 32%,
+    rgba(253, 248, 245, 0.9) 42%, rgba(129, 163, 87, 0.3) 52%, rgba(241, 186, 179, 0.85) 62%, rgba(232, 227, 216, 0.9) 72%,
+    rgba(215, 92, 97, 0.4) 82%, rgba(241, 186, 179, 0) 100%); }
+@keyframes cu-foil { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
+.cu-shimmer__sheen { position: absolute; inset: 0; opacity: 0.85; background-size: 300% 300%; animation: cu-sheen 11s ease-in-out infinite alternate;
+  background-image: linear-gradient(60deg, rgba(255, 255, 255, 0) 32%, rgba(255, 255, 255, 0.7) 44%, rgba(241, 186, 179, 0.4) 50%, rgba(255, 255, 255, 0.6) 56%, rgba(255, 255, 255, 0) 68%); }
+@keyframes cu-sheen { from { background-position: 100% 30%; } to { background-position: 0% 70%; } }
 
 /* the face stage: she floats on the page, no card */
 .cu-stage { position: relative; aspect-ratio: 6 / 7; max-height: 64vh; width: 100%; margin: 0 auto; outline: none; touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: grab; }
@@ -296,7 +302,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .cu-seg button, .cu-shadechip__tile, .cu-fit__bar span, .cu-app .cu-pill-btn { transition: none; }
-  .cu-stage__float, .cu-stage__hint, .cu-shimmer__holo, .cu-shimmer__sheen { animation: none; }
+  .cu-stage__float, .cu-stage__hint, .cu-shimmer__holo, .cu-shimmer__foil, .cu-shimmer__sheen { animation: none; }
   .cu-stage__tilt { transition: transform 120ms linear; }
 }
 
