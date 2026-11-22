@@ -1,25 +1,41 @@
-// Shade Studio, Phase 2 step 1: the face stage, area zoom, and "Your face" (skin + lip sliders and hex).
-// Shades, finish and look arrive in step 2.
+// Shade Studio.
+// Step 1: the face stage, area zoom, and "Your face" (skin + lip sliders and hex).
+// Step 2: placeholder shades per area, finish, look, fit score with a plain-English reason, and The science.
 import { useEffect, useRef, useState } from 'react';
-import { LIP_RAMP, SKIN_RAMP, normaliseHex, rampAt } from '../../lib/colour';
+import { Link } from 'react-router-dom';
+import { FINISHES, LEANS, LIP_RAMP, LOOKS, SKIN_RAMP, areaBases, hexToLch, normaliseHex, perceived, rampAt, scoreShade } from '../../lib/colour';
 import { ScreenHeader } from '../components/Chrome';
 import FaceStage from '../components/FaceStage';
+import { leanById, scoringLean } from '../lib/leans';
 import { usePrefs } from '../lib/prefs';
+import { SHADES, shortName } from '../lib/shades';
 import { track } from '../lib/track';
 
 const AREAS = [
-  { id: 'lips', label: 'Lips' },
-  { id: 'cheeks', label: 'Cheeks' },
-  { id: 'eyes', label: 'Eyes' },
+  { id: 'lips', label: 'Lips', product: 'lip colour' },
+  { id: 'cheeks', label: 'Cheeks', product: 'blush' },
+  { id: 'eyes', label: 'Eyes', product: 'eyeshadow' },
 ];
+const AREA_IDS = AREAS.map((a) => a.id);
 
 // Slider defaults equal the featured character's own photographed tones.
 const DEFAULT_T = { skin: 40, lips: 50 };
 const RAMPS = { skin: SKIN_RAMP, lips: LIP_RAMP };
-const DEFAULTS = { skin: rampAt(SKIN_RAMP, DEFAULT_T.skin), lips: rampAt(LIP_RAMP, DEFAULT_T.lips) };
+const DEFAULT_BASES = areaBases(rampAt(SKIN_RAMP, DEFAULT_T.skin), rampAt(LIP_RAMP, DEFAULT_T.lips));
 const LOG_DELAY = 800; // ms after the last change before we save and log it
 
 const trackStyle = (stops) => ({ background: `linear-gradient(90deg, ${stops.join(', ')})` });
+const isWarm = (h) => h >= LEANS.warm.hue[0] && h <= LEANS.warm.hue[1];
+
+function Segmented({ label, options, value, onChange }) {
+  return (
+    <div className="cu-seg" role="group" aria-label={label}>
+      {options.map((o, i) => (
+        <button key={o} type="button" aria-pressed={value === i} className={value === i ? 'is-on' : ''} onClick={() => onChange(i)}>{o}</button>
+      ))}
+    </div>
+  );
+}
 
 function ColourRow({ part, label, t, hex, overridden, onSlide, onHex }) {
   const [text, setText] = useState(hex);
@@ -53,13 +69,21 @@ export default function Studio() {
   });
   const [area, setArea] = useState('lips');
   const [zoomed, setZoomed] = useState(false);
+  const [sel, setSel] = useState({ lips: 0, cheeks: 0, eyes: 0 });
+  const [finOverride, setFinOverride] = useState({ lips: null, cheeks: null, eyes: null });
+  const [sciOpen, setSciOpen] = useState(false);
+  const look = prefs.look ?? 1;
+  const lean = leanById(prefs.lean);
+  const scoring = scoringLean(lean ? lean.id : 'not_sure');
   const pending = useRef({});
   const timer = useRef(null);
 
+  // ---------- the user's face ----------
   const user = {
     skin: face.skinHex || rampAt(SKIN_RAMP, face.skinT),
     lips: face.lipHex || rampAt(LIP_RAMP, face.lipT),
   };
+  const bases = areaBases(user.skin, user.lips);
 
   // Save to the device and log once the user pauses, not on every pixel of a drag.
   const schedule = (next, part, via) => {
@@ -80,13 +104,48 @@ export default function Studio() {
     setFace(next);
     schedule(next, part, via);
   };
+  const custom = face.skinHex || face.lipHex || face.skinT !== DEFAULT_T.skin || face.lipT !== DEFAULT_T.lips;
+
+  // ---------- shades ----------
+  const finOf = (a) => finOverride[a] ?? SHADES[a][sel[a]].fin;
+  const onYou = (a) => perceived(a, SHADES[a][sel[a]].hex, finOf(a), bases[a]);
+  // Every area wears its picked shade, so the full face shows the whole look.
+  const current = { ...bases, lips: onYou('lips'), cheeks: onYou('cheeks'), eyes: onYou('eyes') };
+
+  const shade = SHADES[area][sel[area]];
+  const fin = finOf(area);
+  const per = current[area];
+  const fit = scoreShade({ area, baseHex: bases[area], perceivedHex: per, lean: scoring, look });
+  const P = fit.lch;
+  const dL = P[0] - hexToLch(bases[area])[0];
+  const leanWord = lean && lean.id !== 'not_sure' ? `your ${lean.id} lean` : 'a neutral start';
+
+  const logView = (a, i, extra = {}) => {
+    const s = SHADES[a][i];
+    track('shade_viewed', { area: a, shade_key: s.id, brand: s.brand, shade: s.shade, placeholder: true, ...extra });
+  };
 
   const pickArea = (id) => {
     setArea(id);
     setZoomed(true);
+    logView(id, sel[id], { from: 'area' });
   };
+  const pickShade = (i) => {
+    setSel((s) => ({ ...s, [area]: i }));
+    setFinOverride((f) => ({ ...f, [area]: null }));
+    logView(area, i, { from: 'chip' });
+  };
+  const pickFinish = (i) => setFinOverride((f) => ({ ...f, [area]: i }));
+  const pickLook = (i) => update({ look: i });
 
-  const custom = face.skinHex || face.lipHex || face.skinT !== DEFAULT_T.skin || face.lipT !== DEFAULT_T.lips;
+  const science = [
+    { label: 'Lightness (L)', value: String(Math.round(P[0])), note: 'Higher is lighter, lower is deeper. 0 is black, 100 is white.' },
+    { label: 'Chroma (C)', value: String(Math.round(P[1])), note: 'Higher is brighter, lower is more muted.' },
+    { label: 'Hue angle (h)', value: `${Math.round(P[2])}°`, note: 'Where the colour sits on the colour wheel. Around 25° to 75° reads warm.' },
+    { label: 'Temperature', value: isWarm(P[2]) ? 'Warm' : 'Cool', note: 'Read from the hue angle.' },
+    { label: 'Contrast (ΔL)', value: `${dL > 0 ? '+' : ''}${Math.round(dL)}`, note: `How much lighter (+) or darker (−) it looks than your bare ${area === 'lips' ? 'lips' : 'skin'}.` },
+    { label: 'Colour shift (ΔE)', value: String(Math.round(fit.dE)), note: 'How different it looks from your bare colour. Under 2 is invisible; over 10 is clearly a new colour.' },
+  ];
 
   return (
     <div className="cu-screen">
@@ -97,17 +156,67 @@ export default function Studio() {
         </div>
 
         <div className="cu-pad-x">
-          <div className="cu-seg" role="group" aria-label="Show lips, cheeks or eyes">
-            {AREAS.map((a) => (
-              <button key={a.id} type="button" aria-pressed={area === a.id} className={area === a.id ? 'is-on' : ''} onClick={() => pickArea(a.id)}>{a.label}</button>
-            ))}
-          </div>
+          <Segmented label="Show lips, cheeks or eyes" options={AREAS.map((a) => a.label)} value={AREA_IDS.indexOf(area)} onChange={(i) => pickArea(AREA_IDS[i])} />
         </div>
 
         <div className="cu-pad-x">
-          <FaceStage area={area} zoomed={zoomed} onToggleZoom={() => setZoomed((z) => !z)} user={user} defaults={DEFAULTS} />
+          <FaceStage area={area} zoomed={zoomed} onToggleZoom={() => setZoomed((z) => !z)} current={current} defaults={DEFAULT_BASES}
+            label={`Wearing ${shade.brand} ${shade.shade} on the ${area}.`} chip={{ hex: per, text: `On you ${per}` }} />
         </div>
 
+        {/* the shade */}
+        <section className="cu-pad-x" aria-labelledby="shade-name">
+          <div className="glass cu-shadecard">
+            <div className="cu-shadecard__head">
+              <div className="cu-shadecard__titles">
+                <span className="cu-eyebrow">{shade.brand}</span>
+                <h2 id="shade-name" className="cu-shadecard__name">{shade.name}</h2>
+                <span className="cu-shadecard__sub">{shade.shade} · {FINISHES[fin]}</span>
+              </div>
+              <span className="cu-tag cu-tag--quiet">Placeholder colour</span>
+            </div>
+
+            <div className="cu-chips-scroll" role="group" aria-label={`Choose a ${AREAS.find((a) => a.id === area).product}`}>
+              {SHADES[area].map((s, i) => (
+                <button key={s.id} type="button" className={`cu-shadechip${sel[area] === i ? ' is-on' : ''}`} aria-pressed={sel[area] === i}
+                  aria-label={`${s.brand} ${s.shade}`} onClick={() => pickShade(i)}>
+                  {/* neutral tile so the product colour reads true */}
+                  <span className="cu-shadechip__tile"><span className="cu-shadechip__swatch" style={{ background: s.hex }} /></span>
+                  <span className="cu-shadechip__label">{shortName(s)}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="cu-fit">
+              <div className="cu-fit__row">
+                <span className="cu-fit__verdict">{fit.verdict} for {leanWord}</span>
+                <span className="cu-fit__score">{fit.score}</span>
+              </div>
+              <div className="cu-fit__bar" aria-hidden="true"><span style={{ width: `${fit.score}%` }} /></div>
+              <p className="cu-fit__reason">{fit.reason}</p>
+              <p className="cu-fine">Fit score out of 100: how well this shade, as it looks on you, suits {leanWord} and the look you picked.</p>
+              {!lean && <Link to="/undertone" className="cu-link">Pick your undertone for a truer score</Link>}
+            </div>
+          </div>
+        </section>
+
+        {/* application */}
+        <section className="cu-pad-x cu-gap-s" aria-labelledby="application">
+          <h2 id="application" className="cu-section-label">Application</h2>
+          <div className="glass cu-appcard">
+            <div className="cu-approw">
+              <span className="cu-approw__label">Finish</span>
+              <Segmented label="Finish" options={FINISHES} value={fin} onChange={pickFinish} />
+            </div>
+            <div className="cu-approw">
+              <span className="cu-approw__label">Look</span>
+              <Segmented label="Look" options={LOOKS} value={look} onChange={pickLook} />
+            </div>
+          </div>
+          <p className="cu-fine cu-pad-note">Finish changes how much colour shows. Look is the effect you're going for, and it shapes the fit score.</p>
+        </section>
+
+        {/* your face */}
         <section className="cu-pad-x cu-gap-s" aria-labelledby="your-face">
           <h2 id="your-face" className="cu-section-label">Your face</h2>
           <div className="glass cu-facecard">
@@ -129,14 +238,30 @@ export default function Studio() {
           )}
         </section>
 
+        {/* the science */}
         <section className="cu-pad-x">
-          <div className="glass cu-card cu-gap-s">
-            <span className="cu-tag">Coming next</span>
-            <p className="cu-muted">Try lip, blush and eyeshadow shades on this face, with a fit score for each.</p>
+          <div className="glass cu-sci">
+            <button type="button" className="cu-sci__toggle" aria-expanded={sciOpen} aria-controls="sci-panel" onClick={() => setSciOpen((o) => !o)}>
+              <span>The science</span>
+              <span className="cu-sci__hint">{sciOpen ? 'Hide' : 'Show'}</span>
+            </button>
+            {sciOpen && (
+              <div id="sci-panel" className="cu-sci__panel">
+                <p className="cu-fine">The numbers behind {shortName(shade)} as it looks on you ({per}).</p>
+                {science.map((r) => (
+                  <div key={r.label} className="cu-sci__row">
+                    <div className="cu-sci__top"><span>{r.label}</span><span className="cu-sci__val">{r.value}</span></div>
+                    <span className="cu-sci__note">{r.note}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
-        <p className="cu-fine cu-pad-x cu-center">Screens aren't colour-calibrated, so previews are close approximations.</p>
+        <p className="cu-fine cu-pad-x cu-center">
+          Screens aren't colour-calibrated, so previews are close approximations. Product colours here are placeholders until our swatch research is in.
+        </p>
       </div>
     </div>
   );

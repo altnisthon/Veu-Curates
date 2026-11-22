@@ -46,22 +46,21 @@ export const SCENES = {
 export const SCENE_FOR_AREA = { lips: 'lipsc', cheeks: 'cheekc', eyes: 'eyec' };
 export const maskFile = (scene, area) => `m_${scene}_${area}.png`;
 
-// The user's skin and lips as they should appear in one scene. `defaults` are the slider defaults
-// (the full-face photo's own tones); each scene's measured colour moves by the user's change from them.
-export const sceneTargets = (sampled, user, defaults) => ({
-  skin: shiftLike(sampled.skin, defaults.skin, user.skin),
-  lips: sampled.lips ? shiftLike(sampled.lips, defaults.lips, user.lips) : null,
-});
+// What each area of one photo should show. `current` = colour per area (skin, lips, cheeks, eyes), bare or
+// with products on; `defaults` = the same for her own colouring (slider defaults, no products).
+// Each photo's measured colour moves by current - defaults, so close-ups stay consistent with the full
+// face and nothing changes until the user does something.
+export const sceneTargets = (sampled, current, defaults) => {
+  const shift = (key, area) => (sampled[key] ? shiftLike(sampled[key], defaults[area], current[area]) : null);
+  return { skin: shift('skin', 'skin'), lips: shift('lips', 'lips'), cheek: shift('cheek', 'cheeks'), lid: shift('lid', 'eyes') };
+};
 
-// Build every layer's style for one scene.
-// bases = areaBases(userSkin, userLip) from colour.js; looks = perceived colour per area with products on.
-// variant 'after' shows products; 'before' shows the user's bare colouring (for the before/after split).
-export const sceneLayers = ({ sampled, bases, looks, variant }) => {
-  const after = variant === 'after';
-  return {
-    skin: layerStyles(sampled.skin, bases.skin, 0.85, true),
-    lips: layerStyles(sampled.lips, after ? looks.lips : bases.lips, 0.95, true),
-    cheek: layerStyles(bases.cheeks, looks.cheeks, 0.9, after),
-    lid: layerStyles(bases.eyes, looks.eyes, 0.85, after),
-  };
+const OPACITY = { skin: 0.85, lips: 0.95, cheek: 0.9, lid: 0.85 };
+
+// Layer styles for every area of one photo.
+export const sceneLayers = (sampled, current, defaults) => {
+  const t = sceneTargets(sampled, current, defaults);
+  const out = {};
+  Object.keys(OPACITY).forEach((a) => { if (sampled[a]) out[a] = layerStyles(sampled[a], t[a], OPACITY[a]); });
+  return out;
 };
