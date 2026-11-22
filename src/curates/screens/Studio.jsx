@@ -311,9 +311,8 @@ export default function Studio() {
             <ToneReadout label={wheelPart === 'skin' ? 'Skin' : 'Lips'} hex={user[wheelPart]} pos={posOf(wheelPart)}
               onHex={(h) => change(wheelPart, 'hex', wheelPart === 'skin' ? { skinHex: h, skin: null } : { lipHex: h, lips: null })} />
           </div>
-          <p className="cu-gfoot">
+          <p className="cu-gfoot cu-center">
             Drag across the wheel: left is cooler, right is warmer, up is lighter, down is deeper. Stop where the face looks like you.
-            VEU clients will start from the skin colour measured at their consultation.
           </p>
         </section>
 
@@ -340,7 +339,7 @@ export default function Studio() {
         )}
 
         <p className="cu-fine cu-pad-x cu-center">
-          Screens aren't colour-calibrated, so previews are close approximations. Product colours here are placeholders until our swatch research is in.
+          Screens aren't colour-calibrated, so previews are close approximations.
         </p>
         <ProductMenu open={menuOpen} onClose={closeMenu} area={area} selectedId={area ? sel[area] : null} scoreFor={scoreFor}
           onPick={(p) => { choose(p, 'menu'); setMenuOpen(false); }}
