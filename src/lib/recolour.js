@@ -1,6 +1,7 @@
 // Recolours the featured character photo in the browser using CSS masks + blend modes.
 // Each area (skin, lips, cheek, lid) is two stacked layers clipped by an alpha mask PNG:
-//   1. a lightness layer (multiply to darken, screen to lighten) so depth changes look real
+//   1. a lightness layer (multiply to darken, color-dodge to lighten) that scales the photo's own
+//      light and shade, so depth changes look real and the skin texture stays
 //   2. a colour layer (mix-blend-mode: color) that swaps hue and saturation but keeps the photo's texture
 // The scene wrapper needs `isolation: isolate` so layers blend with the photo only.
 
@@ -11,6 +12,8 @@ const luma = (hex) => { const [r, g, b] = hexToRgb(hex); return (0.299 * r + 0.5
 // Below this ΔE the target is the photo's own colour, so the layers stay off and the photo is untouched
 // (a flat colour layer would otherwise even out the photo's natural variation).
 const SAME = 1;
+// Most a lightness layer may brighten: 1 / (1 - 0.45) ≈ 1.8x. Enough for the lightest skin on the slider.
+const MAX_DODGE = 0.45;
 
 // B = colour currently in the photo for that area, T = target colour, op = colour layer opacity.
 export const layerStyles = (B, T, op = 0.9, on = true) => {
@@ -22,9 +25,12 @@ export const layerStyles = (B, T, op = 0.9, on = true) => {
     const g = Math.round(255 * r);
     lightness = { background: `rgb(${g},${g},${g})`, mixBlendMode: 'multiply' };
   } else {
-    const s = Math.min(1, (lb * r - lb) / Math.max(0.02, 1 - lb));
+    // color-dodge divides by (1 - s), so every pixel is scaled up by the same ratio r: the mirror of
+    // multiply. Shading, pores and shine keep their contrast. (Screen squashed contrast and flattened the photo.)
+    // Capped so very light targets don't blow out the brightest areas.
+    const s = Math.min(MAX_DODGE, 1 - 1 / r);
     const g = Math.round(255 * s);
-    lightness = { background: `rgb(${g},${g},${g})`, mixBlendMode: 'screen' };
+    lightness = { background: `rgb(${g},${g},${g})`, mixBlendMode: 'color-dodge' };
   }
   return { lightness, colour: { background: T, mixBlendMode: 'color', opacity: op } };
 };
