@@ -4,13 +4,17 @@
 //   2. a colour layer (mix-blend-mode: color) that swaps hue and saturation but keeps the photo's texture
 // The scene wrapper needs `isolation: isolate` so layers blend with the photo only.
 
-import { hexToRgb } from './colour';
+import { deltaE2000, hexToLab, hexToRgb, shiftLike } from './colour';
 
 const luma = (hex) => { const [r, g, b] = hexToRgb(hex); return (0.299 * r + 0.587 * g + 0.114 * b) / 255; };
 
+// Below this ΔE the target is the photo's own colour, so the layers stay off and the photo is untouched
+// (a flat colour layer would otherwise even out the photo's natural variation).
+const SAME = 1;
+
 // B = colour currently in the photo for that area, T = target colour, op = colour layer opacity.
 export const layerStyles = (B, T, op = 0.9, on = true) => {
-  if (!on || !B || !T) return { lightness: { opacity: 0 }, colour: { opacity: 0 } };
+  if (!on || !B || !T || deltaE2000(hexToLab(B), hexToLab(T)) < SAME) return { lightness: { opacity: 0 }, colour: { opacity: 0 } };
   const lb = Math.max(0.02, luma(B));
   const r = luma(T) / lb;
   let lightness;
@@ -35,6 +39,13 @@ export const SCENES = {
 };
 export const SCENE_FOR_AREA = { lips: 'lipsc', cheeks: 'cheekc', eyes: 'eyec' };
 export const maskFile = (scene, area) => `m_${scene}_${area}.png`;
+
+// The user's skin and lips as they should appear in one scene. `defaults` are the slider defaults
+// (the full-face photo's own tones); each scene's measured colour moves by the user's change from them.
+export const sceneTargets = (sampled, user, defaults) => ({
+  skin: shiftLike(sampled.skin, defaults.skin, user.skin),
+  lips: sampled.lips ? shiftLike(sampled.lips, defaults.lips, user.lips) : null,
+});
 
 // Build every layer's style for one scene.
 // bases = areaBases(userSkin, userLip) from colour.js; looks = perceived colour per area with products on.

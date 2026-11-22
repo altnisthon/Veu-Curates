@@ -32,6 +32,34 @@ export const labToLch = ([L, a, b]) => {
 
 export const hexToLch = (hex) => labToLch(hexToLab(hex));
 
+// Inverse of hexToLab (same D65 white). Out-of-gamut values are clipped.
+export const labToHex = ([L, a, b]) => {
+  const fy = (L + 16) / 116, fx = fy + a / 500, fz = fy - b / 200;
+  const inv = (t) => (t * t * t > 0.008856 ? t * t * t : (t - 16 / 116) / 7.787);
+  const x = inv(fx) * 0.95047, y = inv(fy), z = inv(fz) * 1.08883;
+  const lin = [
+    3.2406 * x - 1.5372 * y - 0.4986 * z,
+    -0.9689 * x + 1.8758 * y + 0.0415 * z,
+    0.0557 * x - 0.204 * y + 1.057 * z,
+  ];
+  return rgbToHex(lin.map((v) => fromLinear(Math.max(0, Math.min(1, v)))));
+};
+
+// Move `hex` by the same Lab step as fromHex -> toHex.
+// Each photo was measured separately, so a close-up's skin is not exactly the full face's skin.
+// Shifting each photo by the user's change keeps every scene consistent and unchanged at the defaults.
+export const shiftLike = (hex, fromHex, toHex) => {
+  const [h, f, t] = [hex, fromHex, toHex].map(hexToLab);
+  return labToHex(h.map((v, i) => v + t[i] - f[i]));
+};
+
+// Accepts "#abc123", "abc123", "#abc" or "abc". Returns "#ABC123" or null.
+export const normaliseHex = (input) => {
+  let h = String(input || '').trim().replace(/^#/, '');
+  if (/^[0-9a-f]{3}$/i.test(h)) h = h.split('').map((c) => c + c).join('');
+  return /^[0-9a-f]{6}$/i.test(h) ? `#${h.toUpperCase()}` : null;
+};
+
 // ---------- blending ----------
 // Mix in linear RGB so pigment over skin behaves physically. t = product opacity (0-1).
 export const mixLinear = (baseHex, topHex, t) => {

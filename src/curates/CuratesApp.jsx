@@ -7,6 +7,7 @@ import { PrefsContext, usePrefsState } from './lib/prefs';
 import Home from './screens/Home';
 import Undertone from './screens/Undertone';
 import Result from './screens/Result';
+import Studio from './screens/Studio';
 import { ComingSoon, Me, Privacy } from './screens/Simple';
 
 const NO_TABBAR = ['/undertone'];
@@ -28,7 +29,7 @@ function Shell() {
             <Route path="/undertone" element={<Undertone />} />
             <Route path="/result" element={<Result />} />
             <Route path="/learn" element={<ComingSoon tab="learn" />} />
-            <Route path="/studio" element={<ComingSoon tab="studio" />} />
+            <Route path="/studio" element={<Studio />} />
             <Route path="/explore" element={<ComingSoon tab="explore" />} />
             <Route path="/me" element={<Me />} />
             <Route path="/privacy" element={<Privacy />} />

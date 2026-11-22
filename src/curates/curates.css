@@ -166,6 +166,61 @@
 .cu-privacy--compact h4:first-child { margin-top: 0; }
 .cu-privacy--compact p { font-size: 14px; line-height: 20px; }
 
+/* ---------- studio ---------- */
+.cu-studio { display: flex; flex-direction: column; gap: 16px; padding: 12px 0 24px; }
+.cu-pad-x { padding: 0 16px; }
+.cu-pad-note { padding: 0 16px; }
+.cu-section-label { font-family: var(--font-body); font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text-secondary); padding: 0 4px; }
+
+/* iOS segmented control */
+.cu-seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); background: rgba(255, 255, 255, 0.55); border-radius: 10px; padding: 2px; }
+.cu-seg button { min-height: 36px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-secondary); position: relative; transition: background 160ms ease, color 160ms ease; }
+.cu-seg button::before { content: ''; position: absolute; inset: -4px 0; } /* 44px hit area */
+.cu-seg button.is-on { background: #fff; color: var(--veu-crimson); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+
+/* the face stage */
+.cu-stage { position: relative; aspect-ratio: 6 / 7; max-height: 68vh; width: 100%; margin: 0 auto; border-radius: 20px; overflow: hidden; background: #2A1412; box-shadow: 0 16px 40px rgba(147, 45, 40, 0.25); }
+.cu-stage__glow { position: absolute; inset: 0; background: radial-gradient(65% 55% at 50% 36%, rgba(241, 186, 179, 0.42), rgba(215, 92, 97, 0.12) 55%, rgba(42, 20, 18, 0) 80%); }
+.cu-stage__scenes { position: absolute; inset: 0; overflow: hidden; }
+.cu-scene { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+.cu-scene--portrait { transform: scale(1.25); }
+.cu-scene--close { transform: scale(0.85); }
+.cu-scene.is-on { opacity: 1; transform: none; }
+.cu-scene__frame { position: absolute; isolation: isolate; }
+/* full face: fill the width, centre vertically. close-ups: fill the height, centre horizontally */
+.cu-scene--portrait .cu-scene__frame { left: 0; width: 100%; aspect-ratio: 600 / 804; top: 50%; transform: translateY(-50%); }
+.cu-scene--close .cu-scene__frame { top: 0; height: 100%; aspect-ratio: 800 / 597; left: 50%; transform: translateX(-50%); }
+.cu-scene__frame img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; }
+.cu-scene__layer { position: absolute; inset: 0; }
+.cu-stage__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(rgba(30, 12, 10, 0.38), rgba(30, 12, 10, 0) 20%, rgba(30, 12, 10, 0) 72%, rgba(30, 12, 10, 0.5)); }
+.cu-stage__top { position: absolute; top: 6px; left: 12px; right: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cu-stage__tag { font: 600 11px/1 ui-monospace, Menlo, monospace; letter-spacing: 1.2px; color: rgba(255, 255, 255, 0.8); }
+/* 44px tall hit area with a 32px visible pill drawn behind the label */
+.cu-app .cu-stage__btn { position: relative; z-index: 0; min-height: var(--tap); padding: 0 14px; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; color: #fff; font-size: 13px; font-weight: 600; }
+.cu-stage__btn::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 32px; transform: translateY(-50%); border-radius: 16px; background: rgba(255, 255, 255, 0.14); border: 0.5px solid rgba(255, 255, 255, 0.25); z-index: -1; }
+.cu-stage__bottom { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; align-items: flex-end; }
+.cu-stage__chip { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px; border-radius: 14px; background: rgba(255, 255, 255, 0.14); border: 0.5px solid rgba(255, 255, 255, 0.25); color: #fff; }
+.cu-stage__dot { width: 26px; height: 26px; border-radius: 50%; box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.6); }
+.cu-stage__hex { font: 600 13px ui-monospace, Menlo, monospace; }
+
+/* Your face card */
+.cu-facecard { overflow: hidden; }
+.cu-facerow { padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.cu-facerow + .cu-facerow { border-top: 0.5px solid var(--separator); }
+.cu-facerow__top { display: flex; align-items: center; gap: 10px; }
+.cu-facerow__dot { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.15); }
+.cu-facerow__label { font-size: 17px; flex: 1; }
+.cu-facerow__hex { width: 96px; min-height: var(--tap); border: 0; outline: 0; background: transparent; text-align: right; font: 15px ui-monospace, Menlo, monospace; color: var(--text-secondary); text-transform: uppercase; border-radius: 8px; padding: 0 4px; }
+.cu-facerow__hex:focus { background: rgba(255, 255, 255, 0.8); color: var(--text); }
+.cu-range { -webkit-appearance: none; appearance: none; width: 100%; height: 10px; border-radius: 5px; margin: 10px 0; outline-offset: 6px; cursor: pointer; }
+.cu-range::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 0; box-shadow: 0 0.5px 4px rgba(0, 0, 0, 0.35); }
+.cu-range::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 0; box-shadow: 0 0.5px 4px rgba(0, 0, 0, 0.35); }
+.cu-range::-moz-range-track { background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cu-seg button { transition: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cu-page, .cu-sheet, .cu-sheet-backdrop { animation: none; }
   .cu-chip, .cu-option, .cu-switch, .cu-app .btn-primary, .cu-app .btn-tint { transition: none; }
