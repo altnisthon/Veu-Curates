@@ -233,6 +233,18 @@
 /* 44px tall hit area with a 32px visible glass pill */
 .cu-app .cu-stage__btn { position: relative; z-index: 0; min-height: var(--tap); padding: 0 14px; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; color: var(--veu-crimson); font-size: 13px; font-weight: 600; }
 .cu-stage__btn::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 32px; transform: translateY(-50%); border-radius: 16px; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 4px 14px rgba(147, 45, 40, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: -1; }
+/* stage actions (top right): refresh pill + zoom pill */
+.cu-stage__actions { display: inline-flex; align-items: center; gap: 2px; }
+.cu-reset { position: relative; display: inline-flex; }
+.cu-app .cu-reset__btn { position: relative; z-index: 0; width: var(--tap); height: var(--tap); padding: 0; border: 0; background: none; color: var(--veu-crimson); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.cu-reset__btn::before { content: ''; position: absolute; left: 50%; top: 50%; width: 40px; height: 32px; transform: translate(-50%, -50%); border-radius: 16px; z-index: -1;
+  background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 4px 14px rgba(147, 45, 40, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.cu-reset__btn svg { transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1); }
+.cu-reset__btn:active svg { transform: rotate(-200deg); }
+.cu-reset:hover .cu-tip.cu-tip--below, .cu-reset:focus-within .cu-tip.cu-tip--below, .cu-tip.cu-tip--below.is-open { opacity: 1; transform: none; }
+.cu-tip.cu-tip--below { height: auto; top: calc(100% + 2px); bottom: auto; right: -4px; width: auto; white-space: nowrap; padding: 8px 12px; font-size: 13px; font-weight: 600; transform-origin: top right; transform: translateY(-4px) scale(0.98); }
+.cu-tip.cu-tip--below::after { top: -6px; bottom: auto; right: 18px; box-shadow: -0.5px -0.5px 0 rgba(60, 60, 67, 0.12); }
+
 .cu-stage__bottom { position: absolute; left: 4px; right: 4px; bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; pointer-events: none; }
 .cu-stage__chip { display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; border-radius: 20px; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 4px 14px rgba(147, 45, 40, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--text); }
 .cu-stage__dot { width: 24px; height: 24px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08); }
@@ -396,6 +408,11 @@
   .cu-app .cu-capsule, .cu-grow, .cu-gswatch { transition: none; }
 }
 
+/* "None" row in the product menu */
+.cu-group--none { margin-top: 16px; }
+.cu-gswatch--none { width: 30px; height: 30px; box-shadow: none; color: #AEAEB2; display: flex; }
+.cu-grow.is-on .cu-gswatch--none { color: var(--veu-crimson); box-shadow: none; }
+
 /* shared iOS grouped cells (Studio, Explore) */
 .cu-group--spaced { margin-top: 20px; }
 .cu-gcell { padding: 14px 16px; position: relative; }
@@ -470,7 +487,7 @@
 @media (prefers-reduced-motion: reduce) {
   .cu-seg button, .cu-shadechip__tile, .cu-fit__bar span, .cu-app .cu-pill-btn { transition: none; }
   .cu-stage__float, .cu-stage__hint { animation: none; }
-  .cu-scene--portrait, .cu-stage__scenes, .cu-tip { transition: none; }
+  .cu-scene--portrait, .cu-stage__scenes, .cu-tip, .cu-reset__btn svg { transition: none; }
   .cu-stage__tilt { transition: transform 120ms linear; }
 }
 

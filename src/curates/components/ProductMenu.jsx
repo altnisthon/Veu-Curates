@@ -42,7 +42,30 @@ function Group({ title, rows, selectedId, onPick }) {
   );
 }
 
-export default function ProductMenu({ open, onClose, area, selectedId, scoreFor, onPick }) {
+const BARE = { lips: 'Bare lips, her own colour', cheeks: 'No blush, her own skin', eyes: 'No eyeshadow, her own lids' };
+
+// "None": take the product off this area.
+function NoneRow({ area, selected, onClear }) {
+  return (
+    <ul className="cu-group cu-group--none">
+      <li>
+        <button type="button" className={`cu-grow${selected ? ' is-on' : ''}`} aria-pressed={selected} onClick={onClear}>
+          <span className="cu-gtile" aria-hidden="true">
+            <span className="cu-gswatch cu-gswatch--none">
+              <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="13" fill="none" stroke="currentColor" strokeWidth="1.5" /><path d="M6 24 24 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+            </span>
+          </span>
+          <span className="cu-gtext"><span className="cu-gtitle">None</span><span className="cu-gsub">{BARE[area]}</span></span>
+          <span className="cu-gcheck" aria-hidden="true">
+            {selected && <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>}
+          </span>
+        </button>
+      </li>
+    </ul>
+  );
+}
+
+export default function ProductMenu({ open, onClose, area, selectedId, scoreFor, onPick, onClear }) {
   const [q, setQ] = useState('');
   const [brand, setBrand] = useState('all');
   const [sort, setSort] = useState('fit');
@@ -121,6 +144,7 @@ export default function ProductMenu({ open, onClose, area, selectedId, scoreFor,
             </div>
           ) : (
             <>
+              {!q && brand === 'all' && <NoneRow area={area} selected={!selectedId} onClear={onClear} />}
               {sections.map((s) => <Group key={s.title} title={s.title} rows={s.rows} selectedId={selectedId} onPick={onPick} />)}
               {rows.length === 0 && <p className="cu-pm__none">No {what}s match “{q}”.</p>}
               <p className="cu-pm__foot" aria-live="polite">

@@ -67,7 +67,30 @@ function Face({ current, defaults, camera }) {
 const clamp = (v) => Math.max(-MAX_TURN, Math.min(MAX_TURN, v));
 
 // current / defaults: colour per area { skin, lips, cheeks, eyes }. chip: { hex, text } shown bottom left.
-export default function FaceStage({ area, zoomed, onToggleZoom, current, defaults, label, chip }) {
+// Refresh pill: resets the user's skin and lip colours to hers. Tooltip on hover/focus; a short confirmation on tap.
+// It stays up for a moment after a reset (when there's nothing left to reset) so the confirmation can be seen.
+function ResetPill({ onReset }) {
+  const [done, setDone] = useState(false);
+  const t = useRef(null);
+  const last = useRef(onReset);
+  if (onReset) last.current = onReset;
+  useEffect(() => () => clearTimeout(t.current), []);
+  if (!onReset && !done) return null;
+  return (
+    <span className="cu-reset">
+      <button type="button" className="cu-reset__btn" aria-label="Reset colours to her own" aria-describedby="reset-tip" disabled={!onReset}
+        onClick={() => { last.current?.(); setDone(true); clearTimeout(t.current); t.current = setTimeout(() => setDone(false), 1600); }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M20 11a8 8 0 1 0-2.3 5.7" /><path d="M20 4v7h-7" />
+        </svg>
+      </button>
+      <span id="reset-tip" role="tooltip" className={`cu-tip cu-tip--below${done ? ' is-open' : ''}`}>{done ? 'Colours reset' : 'Reset colours to her own'}</span>
+    </span>
+  );
+}
+
+// onReset: shown as a refresh pill when the user has changed her colouring (null hides it).
+export default function FaceStage({ area, zoomed, onToggleZoom, current, defaults, label, chip, onReset = null }) {
   const where = zoomed && area ? `a close-up of the ${AREA_LABEL[area].toLowerCase()}` : 'the full face';
   const [turn, setTurn] = useState(0);
   const [dragging, setDragging] = useState(false);
@@ -139,7 +162,10 @@ export default function FaceStage({ area, zoomed, onToggleZoom, current, default
 
       <div className="cu-stage__top">
         <span className="cu-stage__tag" aria-hidden="true">{area ? `${AREA_LABEL[area].toUpperCase()} · ON YOU` : 'YOUR FACE'}</span>
-        {area && <button type="button" className="cu-stage__btn" onClick={onToggleZoom}>{zoomed ? 'Full face' : 'Zoom in'}</button>}
+        <span className="cu-stage__actions">
+          <ResetPill onReset={onReset} />
+          {area && <button type="button" className="cu-stage__btn" onClick={onToggleZoom}>{zoomed ? 'Full face' : 'Zoom in'}</button>}
+        </span>
       </div>
       <div className="cu-stage__bottom" aria-hidden="true">
         <span className="cu-stage__chip">

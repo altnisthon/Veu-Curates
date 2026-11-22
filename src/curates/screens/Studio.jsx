@@ -175,6 +175,13 @@ export default function Studio() {
     setZoomed(true);
   };
   const closeMenu = useCallback(() => setMenuOpen(false), []);
+  // "None" in the menu: take the product off this area (back to her bare colour).
+  const clearArea = (a) => {
+    const next = { ...sel, [a]: null };
+    setSel(next);
+    setFinOverride((f) => ({ ...f, [a]: null }));
+    update({ picks: next });
+  };
   const pickFinish = (i) => setFinOverride((f) => ({ ...f, [area]: i }));
   const pickLook = (i) => update({ look: i });
 
@@ -207,7 +214,8 @@ export default function Studio() {
         <div className="cu-pad-x">
           <FaceStage area={area} zoomed={zoomed} onToggleZoom={() => setZoomed((z) => !z)} current={current} defaults={DEFAULT_BASES}
             label={shade ? `Wearing ${shade.brand} ${shade.shade} on the ${area}.` : 'Bare face, matched to your skin and lips.'}
-            chip={shade ? { hex: per, text: `On you ${per}` } : { hex: user.skin, text: `Skin ${user.skin}` }} />
+            chip={shade ? { hex: per, text: `On you ${per}` } : { hex: user.skin, text: `Skin ${user.skin}` }}
+            onReset={custom ? () => change('both', 'reset', { ...EMPTY_TONE }) : null} />
         </div>
 
         {area && (<>
@@ -307,11 +315,6 @@ export default function Studio() {
             Drag across the wheel: left is cooler, right is warmer, up is lighter, down is deeper. Stop where the face looks like you.
             VEU clients will start from the skin colour measured at their consultation.
           </p>
-          {custom && (
-            <button type="button" className="cu-textbtn cu-gfoot-btn" onClick={() => change('both', 'reset', { ...EMPTY_TONE })}>
-              Reset to her colouring
-            </button>
-          )}
         </section>
 
         {/* the science */}
@@ -340,7 +343,8 @@ export default function Studio() {
           Screens aren't colour-calibrated, so previews are close approximations. Product colours here are placeholders until our swatch research is in.
         </p>
         <ProductMenu open={menuOpen} onClose={closeMenu} area={area} selectedId={area ? sel[area] : null} scoreFor={scoreFor}
-          onPick={(p) => { choose(p, 'menu'); setMenuOpen(false); }} />
+          onPick={(p) => { choose(p, 'menu'); setMenuOpen(false); }}
+          onClear={() => { clearArea(area); setMenuOpen(false); }} />
       </div>
     </div>
   );
