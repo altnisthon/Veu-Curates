@@ -1,0 +1,75 @@
+/* VEU Curates design tokens: soft futurism on iOS structure, VEU brand colours.
+   Fonts: Cormorant Garamond (headlines, season names) + Montserrat (body, labels, numbers). */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+
+:root {
+  /* brand */
+  --veu-crimson: #932D28;      /* primary accent: buttons, links, selected states */
+  --veu-crimson-deep: #6E1F1B; /* hover / pressed */
+  --veu-rose: #D75C61;
+  --veu-blush: #F1BAB3;
+  --veu-forest: #154327;       /* success, completed */
+  --veu-olive: #81A357;
+  --veu-cream: #FDF8F5;        /* page */
+  --veu-sand: #E8E3D8;
+
+  /* text */
+  --text: #1E1412;
+  --text-secondary: #6B5450;   /* passes 4.5:1 on cream */
+  --separator: rgba(147, 45, 40, 0.14);
+  --track: rgba(147, 45, 40, 0.10);
+
+  /* glass */
+  --glass-bg: rgba(255, 255, 255, 0.52);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.75);
+  --glass-blur: blur(20px);
+  --glass-shadow: 0 10px 30px rgba(147, 45, 40, 0.08);
+  --tint: rgba(241, 186, 179, 0.55); /* secondary button fill */
+
+  /* shape + type */
+  --radius-card: 18px;
+  --radius-pill: 26px;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Montserrat', -apple-system, system-ui, sans-serif;
+  --tap: 44px; /* minimum touch target */
+}
+
+body { margin: 0; background: var(--veu-cream); color: var(--text); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: 0; }
+h1 { font-size: 40px; line-height: 44px; }
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-card);
+}
+
+.btn-primary { height: 52px; border-radius: var(--radius-pill); background: var(--veu-crimson); color: #fff; font: 600 17px var(--font-body); border: 0; width: 100%; }
+.btn-tint { height: 52px; border-radius: var(--radius-pill); background: var(--tint); color: var(--veu-crimson); font: 600 17px var(--font-body); border: 0; width: 100%; }
+
+/* floating glass tab bar */
+.tabbar { position: fixed; left: 14px; right: 14px; bottom: calc(16px + env(safe-area-inset-bottom)); height: 64px; border-radius: 32px;
+  background: rgba(255, 255, 255, 0.58); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: 0 10px 30px rgba(147, 45, 40, 0.14); }
+
+/* drifting background orbs */
+@keyframes drift { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(18px, -14px) scale(1.06); } }
+.orb { position: absolute; border-radius: 50%; animation: drift 14s ease-in-out infinite; pointer-events: none; }
+.orb--blush { width: 360px; height: 360px; left: -120px; top: -80px; background: var(--veu-blush); filter: blur(70px); opacity: 0.85; }
+.orb--rose { width: 300px; height: 300px; right: -140px; top: 260px; background: var(--veu-rose); filter: blur(80px); opacity: 0.35; animation-delay: -5s; }
+.orb--olive { width: 320px; height: 320px; left: -100px; bottom: -60px; background: var(--veu-olive); filter: blur(90px); opacity: 0.28; animation-delay: -9s; }
+
+/* scroll reveal (Home guide) */
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity 600ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1); }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* Studio scene zoom (full face <-> close-up) */
+.scene { transition: opacity 420ms ease, transform 640ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; }
+  .reveal, .scene { transition: none; }
+}

@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Shade Studio</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Montserrat:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#932D28;text-decoration:none}a:hover{color:#6E1F1B}
+input,button{font:inherit}
+input[type=range]{-webkit-appearance:none;appearance:none;height:8px;border-radius:4px;outline:none;margin:0}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 0.5px 4px rgba(0,0,0,0.35);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:#fff;border:0;box-shadow:0 0.5px 4px rgba(0,0,0,0.35)}
+.hs::-webkit-scrollbar{display:none}
+.face{transition:transform 520ms cubic-bezier(0.22,1,0.36,1)}
+input.split{-webkit-appearance:none;appearance:none}
+input.split::-webkit-slider-runnable-track{height:100%}
+input.split::-webkit-slider-thumb{-webkit-appearance:none;width:44px;height:280px}
+.fx{transition:fill 180ms ease}
+@media (prefers-reduced-motion: reduce){.face,.fx{transition:none}}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif !important;font-weight:600 !important;letter-spacing:0 !important}
+h1{font-size:40px !important;line-height:44px !important}
+.serif{font-family:'Cormorant Garamond',Georgia,serif !important}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(18px,-14px) scale(1.06)}100%{transform:translate(0,0) scale(1)}}
+.orb{animation:drift 14s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.orb{animation:none}}
+.mk-base-skin{-webkit-mask-image:url(/_blob/b134e58d74d7a887eed6b34a9b7bd46d);mask-image:url(/_blob/b134e58d74d7a887eed6b34a9b7bd46d);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.mk-base-lid{-webkit-mask-image:url(/_blob/a006fe83adfcda6b6e59b65e4bbf3ecc);mask-image:url(/_blob/a006fe83adfcda6b6e59b65e4bbf3ecc);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.mk-base-cheek{-webkit-mask-image:url(/_blob/e2c23f95a63ff55a8bf7865285125366);mask-image:url(/_blob/e2c23f95a63ff55a8bf7865285125366);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.mk-base-lips{-webkit-mask-image:url(/_blob/51a71992c7da2284a219be71c6c67ed6);mask-image:url(/_blob/51a71992c7da2284a219be71c6c67ed6);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.mk-lipsc-skin{-webkit-mask-image:url(/_blob/65276649524f8cca200b71ba6d6f7201);mask-image:url(/_blob/65276649524f8cca200b71ba6d6f7201);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.mk-lipsc-lips{-webkit-mask-image:url(/_blob/bd8aa57db88d5f31d596d3c3722c20be);mask-image:url(/_blob/bd8aa57db88d5f31d596d3c3722c20be);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.mk-cheekc-skin{-webkit-mask-image:url(/_blob/263a0ac13e455ad8c9fd2c24c579ff62);mask-image:url(/_blob/263a0ac13e455ad8c9fd2c24c579ff62);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.mk-cheekc-cheek{-webkit-mask-image:url(/_blob/5dc8906e954b3fabd1881b535235c56d);mask-image:url(/_blob/5dc8906e954b3fabd1881b535235c56d);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.mk-cheekc-lips{-webkit-mask-image:url(/_blob/291071fcba72b1295ae28f00455fa514);mask-image:url(/_blob/291071fcba72b1295ae28f00455fa514);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.mk-eyec-skin{-webkit-mask-image:url(/_blob/40894caedf221542c6c728bd03c9900e);mask-image:url(/_blob/40894caedf221542c6c728bd03c9900e);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.mk-eyec-lid{-webkit-mask-image:url(/_blob/dfe9d9f9ce8a2440e97a75de3676893a);mask-image:url(/_blob/dfe9d9f9ce8a2440e97a75de3676893a);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.scn{transition:opacity 420ms ease, transform 640ms cubic-bezier(0.22,1,0.36,1)}
+@media (prefers-reduced-motion: reduce){.scn{transition:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #FDF8F5; font-family: Montserrat, -apple-system, system-ui, sans-serif; color: #1E1412; -webkit-font-smoothing: antialiased">
+<div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden; pointer-events: none">
+<div class="orb" style="position: absolute; width: 360px; height: 360px; left: -120px; top: -80px; border-radius: 50%; background: #F1BAB3; filter: blur(70px); opacity: 0.85"></div>
+<div class="orb" style="position: absolute; width: 300px; height: 300px; right: -140px; top: 260px; border-radius: 50%; background: #D75C61; filter: blur(80px); opacity: 0.35; animation-delay: -5s"></div>
+<div class="orb" style="position: absolute; width: 320px; height: 320px; left: -100px; bottom: -60px; border-radius: 50%; background: #81A357; filter: blur(90px); opacity: 0.28; animation-delay: -9s"></div>
+<div style="position: absolute; width: 260px; height: 260px; right: -60px; bottom: 120px; border-radius: 50%; background: #E8E3D8; filter: blur(60px); opacity: 0.9"></div>
+</div>
+
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 83px; overflow-y: auto; padding: 54px 0 32px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+<nav aria-label="You are here" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: #6B5450; padding: 0 16px; margin-bottom: -20px"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="#932D28" stroke-width="1.6" aria-hidden="true"><path d="M6 13s4.5-4.2 4.5-7.5a4.5 4.5 0 0 0-9 0C1.5 8.8 6 13 6 13z"/><circle cx="6" cy="5.5" r="1.6"/></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">You are here:</span><a href="Main.dc.html" style="color: #6B5450; min-height: 28px; display: inline-flex; align-items: center">Home</a><span aria-hidden="true" style="color: #6B5450">›</span><span aria-current="page" style="color: #000; font-weight: 600">Studio</span></nav>
+<div style="padding: 0 16px; display: flex; align-items: flex-end; justify-content: space-between"><h1 style="margin: 0; font-size: 34px; line-height: 41px; font-weight: 700; letter-spacing: 0.37px">Studio</h1></div>
+
+<div style="padding: 0 16px; display: flex"><div role="radiogroup" aria-label="Lips, cheeks or eyes" style="display: grid; grid-template-columns: repeat({{modesN}}, minmax(0, 1fr)); background: rgba(255,255,255,0.5); border-radius: 9px; padding: 2px; flex: 1">
+<sc-for list="{{modes}}" as="o" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{o.on}}" onClick="{{o.pick}}" style="height: 32px; border: 0; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; {{o.style}}">{{o.label}}</button></sc-for>
+</div></div>
+<div style="margin: 0 16px; border-radius: 20px; overflow: hidden; background: #2A1412; position: relative; height: 420px; box-shadow: 0 16px 40px rgba(147,45,40,0.25)">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(65% 55% at 50% 36%, rgba(241,186,179,0.42), rgba(215,92,97,0.12) 55%, rgba(42,20,18,0) 80%)"></div>
+<div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 120px; background-image: linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 24px 24px"></div>
+<div role="img" aria-label="{{faceAria}}" style="position: absolute; inset: 0; overflow: hidden">
+<div class="scn" style="position: absolute; left: 0px; top: -28px; width: 358px; height: 480px; isolation: isolate; {{sv.base.vis}}"><img src="/_blob/5c24b268b3743c97d8f130bcaa7317c4" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block"><div class="mk-base-skin" style="position: absolute; inset: 0; {{sv.base.after.skinL}}"></div><div class="mk-base-skin" style="position: absolute; inset: 0; {{sv.base.after.skinC}}"></div><div class="mk-base-lid" style="position: absolute; inset: 0; {{sv.base.after.lidL}}"></div><div class="mk-base-lid" style="position: absolute; inset: 0; {{sv.base.after.lidC}}"></div><div class="mk-base-cheek" style="position: absolute; inset: 0; {{sv.base.after.cheekL}}"></div><div class="mk-base-cheek" style="position: absolute; inset: 0; {{sv.base.after.cheekC}}"></div><div class="mk-base-lips" style="position: absolute; inset: 0; {{sv.base.after.lipsL}}"></div><div class="mk-base-lips" style="position: absolute; inset: 0; {{sv.base.after.lipsC}}"></div></div>
+<div class="scn" style="position: absolute; left: -102px; top: 0px; width: 563px; height: 420px; isolation: isolate; {{sv.lipsc.vis}}"><img src="/_blob/9d94bb2ee7eac12b55f5dc12334b8833" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block"><div class="mk-lipsc-skin" style="position: absolute; inset: 0; {{sv.lipsc.after.skinL}}"></div><div class="mk-lipsc-skin" style="position: absolute; inset: 0; {{sv.lipsc.after.skinC}}"></div><div class="mk-lipsc-lips" style="position: absolute; inset: 0; {{sv.lipsc.after.lipsL}}"></div><div class="mk-lipsc-lips" style="position: absolute; inset: 0; {{sv.lipsc.after.lipsC}}"></div></div>
+<div class="scn" style="position: absolute; left: -102px; top: 0px; width: 563px; height: 420px; isolation: isolate; {{sv.cheekc.vis}}"><img src="/_blob/ace5d3591aa9b2b07eb70b460883b31e" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block"><div class="mk-cheekc-skin" style="position: absolute; inset: 0; {{sv.cheekc.after.skinL}}"></div><div class="mk-cheekc-skin" style="position: absolute; inset: 0; {{sv.cheekc.after.skinC}}"></div><div class="mk-cheekc-cheek" style="position: absolute; inset: 0; {{sv.cheekc.after.cheekL}}"></div><div class="mk-cheekc-cheek" style="position: absolute; inset: 0; {{sv.cheekc.after.cheekC}}"></div><div class="mk-cheekc-lips" style="position: absolute; inset: 0; {{sv.cheekc.after.lipsL}}"></div><div class="mk-cheekc-lips" style="position: absolute; inset: 0; {{sv.cheekc.after.lipsC}}"></div></div>
+<div class="scn" style="position: absolute; left: -102px; top: 0px; width: 563px; height: 420px; isolation: isolate; {{sv.eyec.vis}}"><img src="/_blob/c04ff5bb9566f1427d66c0addf23b603" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block"><div class="mk-eyec-skin" style="position: absolute; inset: 0; {{sv.eyec.after.skinL}}"></div><div class="mk-eyec-skin" style="position: absolute; inset: 0; {{sv.eyec.after.skinC}}"></div><div class="mk-eyec-lid" style="position: absolute; inset: 0; {{sv.eyec.after.lidL}}"></div><div class="mk-eyec-lid" style="position: absolute; inset: 0; {{sv.eyec.after.lidC}}"></div></div>
+<div style="position: absolute; inset: 0; clip-path: inset(0 {{clipRight}} 0 0)">
+<div class="scn" style="position: absolute; left: 0px; top: -28px; width: 358px; height: 480px; isolation: isolate; {{sv.base.vis}}"><img src="/_blob/5c24b268b3743c97d8f130bcaa7317c4" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block"><div class="mk-base-skin" style="position: absolute; inset: 0; {{sv.base.before.skinL}}"></div><div class="mk-base-skin" style="position: absolute; inset: 0; {{sv.base.before.skinC}}"></div><div class="mk-base-lid" style="position: absolute; inset: 0; {{sv.base.before.lidL}}"></div><div class="mk-base-lid" style="position: absolute; inset: 0; {{sv.base.before.lidC}}"></div><div class="mk-base-cheek" style="position: absolute; inset: 0; {{sv.base.before.cheekL}}"></div><div class="mk-base-cheek" style="position: absolute; inset: 0; {{sv.base.before.cheekC}}"></div><div class="mk-base-lips" style="position: absolute; inset: 0; {{sv.base.before.lipsL}}"></div><div class="mk-base-lips" style="position: absolute; inset: 0; {{sv.base.before.lipsC}}"></div></div>
+<div class="scn" style="position: absolute; left: -102px; top: 0px; width: 563px; height: 420px; isolation: isolate; {{sv.lipsc.vis}}"><img src="/_blob/9d94bb2ee7eac12b55f5dc12334b8833" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block"><div class="mk-lipsc-skin" style="position: absolute; inset: 0; {{sv.lipsc.before.skinL}}"></div><div class="mk-lipsc-skin" style="position: absolute; inset: 0; {{sv.lipsc.before.skinC}}"></div><div class="mk-lipsc-lips" style="position: absolute; inset: 0; {{sv.lipsc.before.lipsL}}"></div><div class="mk-lipsc-lips" style="position: absolute; inset: 0; {{sv.lipsc.before.lipsC}}"></div></div>
+<div class="scn" style="position: absolute; left: -102px; top: 0px; width: 563px; height: 420px; isolation: isolate; {{sv.cheekc.vis}}"><img src="/_blob/ace5d3591aa9b2b07eb70b460883b31e" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block"><div class="mk-cheekc-skin" style="position: absolute; inset: 0; {{sv.cheekc.before.skinL}}"></div><div class="mk-cheekc-skin" style="position: absolute; inset: 0; {{sv.cheekc.before.skinC}}"></div><div class="mk-cheekc-cheek" style="position: absolute; inset: 0; {{sv.cheekc.before.cheekL}}"></div><div class="mk-cheekc-cheek" style="position: absolute; inset: 0; {{sv.cheekc.before.cheekC}}"></div><div class="mk-cheekc-lips" style="position: absolute; inset: 0; {{sv.cheekc.before.lipsL}}"></div><div class="mk-cheekc-lips" style="position: absolute; inset: 0; {{sv.cheekc.before.lipsC}}"></div></div>
+<div class="scn" style="position: absolute; left: -102px; top: 0px; width: 563px; height: 420px; isolation: isolate; {{sv.eyec.vis}}"><img src="/_blob/c04ff5bb9566f1427d66c0addf23b603" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block"><div class="mk-eyec-skin" style="position: absolute; inset: 0; {{sv.eyec.before.skinL}}"></div><div class="mk-eyec-skin" style="position: absolute; inset: 0; {{sv.eyec.before.skinC}}"></div><div class="mk-eyec-lid" style="position: absolute; inset: 0; {{sv.eyec.before.lidL}}"></div><div class="mk-eyec-lid" style="position: absolute; inset: 0; {{sv.eyec.before.lidC}}"></div></div>
+</div>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; background: linear-gradient(rgba(30,12,10,0.38), rgba(30,12,10,0) 20%, rgba(30,12,10,0) 70%, rgba(30,12,10,0.5))"></div>
+<div aria-hidden="true" style="position: absolute; top: 52px; bottom: 76px; left: {{splitPct}}; width: 2px; margin-left: -1px; background: rgba(255,255,255,0.85)"></div>
+<div aria-hidden="true" style="position: absolute; top: 50%; left: {{splitPct}}; width: 36px; height: 36px; margin: -18px 0 0 -18px; border-radius: 50%; background: rgba(255,255,255,0.95); box-shadow: 0 2px 8px rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center"><svg width="18" height="12" viewBox="0 0 18 12" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1 1 6l4 5M13 1l4 5-4 5"/></svg></div>
+<span aria-hidden="true" style="position: absolute; top: 56px; left: 12px; font-size: 11px; font-weight: 600; letter-spacing: 1.2px; color: rgba(255,255,255,0.75); font-family: ui-monospace, Menlo, monospace">BEFORE</span>
+<span aria-hidden="true" style="position: absolute; top: 56px; right: 12px; font-size: 11px; font-weight: 600; letter-spacing: 1.2px; color: rgba(255,255,255,0.75); font-family: ui-monospace, Menlo, monospace">AFTER</span>
+<input type="range" class="split" min="0" max="100" step="1" value="{{split}}" onChange="{{onSplit}}" aria-label="Before and after" style="position: absolute; left: 0; right: 0; top: 52px; bottom: 76px; width: 100%; height: auto; margin: 0; opacity: 0; cursor: ew-resize; background: transparent">
+<div style="position: absolute; top: 12px; left: 12px; right: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<span style="font-size: 11px; font-weight: 600; letter-spacing: 1.2px; color: rgba(255,255,255,0.75); font-family: ui-monospace, Menlo, monospace">{{hudTag}}</span>
+<div style="display: flex; gap: 6px">
+<sc-if value="{{zoomed}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{zoomOut}}" style="height: 32px; padding: 0 12px; border-radius: 16px; font-size: 13px; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.12); border: 0.5px solid rgba(255,255,255,0.22); color: #fff">Full face</button></sc-if>
+<sc-if value="{{notZoomed}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{zoomIn}}" style="height: 32px; padding: 0 12px; border-radius: 16px; font-size: 13px; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.12); border: 0.5px solid rgba(255,255,255,0.22); color: #fff">Zoom in</button></sc-if>
+</div>
+</div>
+<div style="position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; align-items: flex-end; justify-content: space-between; gap: 10px">
+<div style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px; border-radius: 14px; background: rgba(255,255,255,0.12); border: 0.5px solid rgba(255,255,255,0.22); color: #fff">
+<span style="width: 30px; height: 30px; border-radius: 50%; background: {{onYou}}; box-shadow: 0 0 0 1.5px rgba(255,255,255,0.6)"></span>
+<span style="display: flex; flex-direction: column; gap: 1px; font-family: ui-monospace, Menlo, monospace"><span style="font-size: 13px; font-weight: 600">{{onYouHex}}</span><span style="font-size: 11px; color: rgba(255,255,255,0.75)">{{hudNums}}</span></span>
+</div>
+<div style="display: flex; gap: 8px">
+<button type="button" aria-label="Like how this looks on me" onClick="{{onLike}}" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.12); border: 0.5px solid rgba(255,255,255,0.22); color: #fff"><svg width="22" height="20" viewBox="0 0 24 22" aria-hidden="true"><path d="M12 20.5S2.5 14.6 2.5 7.9A4.9 4.9 0 0 1 12 5.6a4.9 4.9 0 0 1 9.5 2.3C21.5 14.6 12 20.5 12 20.5z" fill="{{heartFill}}" stroke="{{heartStroke}}" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
+<button type="button" aria-label="Not for me" onClick="{{onDislike}}" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; background: rgba(255,255,255,0.12); border: 0.5px solid rgba(255,255,255,0.22); color: #fff"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3.5v10M17 13.5l-4.2 6.6a1.6 1.6 0 0 1-2.9-1.1l.8-4H6.2a2 2 0 0 1-2-2.3l1.2-7A2 2 0 0 1 7.4 4H17"/><path d="M17 3.5h3v10h-3"/></svg></button>
+</div>
+</div>
+</div>
+<div style="margin: -12px 16px 0; padding: 0 4px; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; color: #6B5450">{{prodBrand}}</span>
+<span style="font-size: 17px; font-weight: 600; line-height: 22px">{{prodName}}</span>
+<span style="font-size: 15px; color: #6B5450">{{prodShade}} · {{finLabel}}</span>
+</div>
+<div class="hs" style="display: flex; gap: 14px; overflow-x: auto; padding: 2px 16px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="5">
+<button type="button" aria-label="{{c.aria}}" onClick="{{c.pick}}" style="flex-shrink: 0; width: 68px; background: transparent; border: 0; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer">
+<span style="width: 52px; height: 52px; border-radius: 50%; background: {{c.hex}}; {{c.ring}}"></span>
+<span style="font-size: 11px; line-height: 13px; color: #000; text-align: center">{{c.short}}</span>
+</button>
+</sc-for>
+</div>
+<div style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; align-items: baseline; justify-content: space-between"><span style="font-size: 17px; font-weight: 600">{{verdict}}</span><span style="font-size: 22px; font-weight: 700">{{score}}</span></div>
+<div style="height: 6px; border-radius: 3px; background: rgba(147,45,40,0.10); overflow: hidden"><div style="height: 6px; border-radius: 3px; background: #932D28; width: {{scorePct}}"></div></div>
+<span style="font-size: 15px; line-height: 20px; color: #6B5450">{{reason}}</span>
+</div>
+<div>
+<h2 style="margin: 0 0 8px; padding: 0 20px; font-size: 13px; font-weight: 400; color: #6B5450; text-transform: uppercase; letter-spacing: 0.3px">Your face</h2>
+<div style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 18px; overflow: hidden">
+<div style="padding: 12px 16px 14px; border-bottom: 0.5px solid rgba(147,45,40,0.14); display: flex; flex-direction: column; gap: 10px">
+<label style="display: flex; align-items: center; gap: 10px"><span style="width: 22px; height: 22px; border-radius: 50%; background: {{skin}}; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.15)"></span><span style="font-size: 17px; flex: 1">Skin</span><input type="text" value="{{skinText}}" onChange="{{onSkinHex}}" spellcheck="false" aria-label="Skin hex" style="width: 92px; border: 0; outline: 0; text-align: right; font-size: 15px; color: #6B5450; font-family: ui-monospace, Menlo, monospace; background: transparent"></label>
+<input type="range" min="0" max="100" step="1" value="{{skinT}}" onChange="{{onSkin}}" aria-label="Skin colour" style="width: 100%; background: {{skinTrack}}">
+</div>
+<div style="padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 10px">
+<label style="display: flex; align-items: center; gap: 10px"><span style="width: 22px; height: 22px; border-radius: 50%; background: {{lipBase}}; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.15)"></span><span style="font-size: 17px; flex: 1">Lips</span><input type="text" value="{{lipText}}" onChange="{{onLipHex}}" spellcheck="false" aria-label="Lip hex" style="width: 92px; border: 0; outline: 0; text-align: right; font-size: 15px; color: #6B5450; font-family: ui-monospace, Menlo, monospace; background: transparent"></label>
+<input type="range" min="0" max="100" step="1" value="{{lipT}}" onChange="{{onLip}}" aria-label="Lip colour" style="width: 100%; background: {{lipTrack}}">
+</div>
+</div>
+<p style="margin: 8px 32px 0; font-size: 13px; line-height: 18px; color: #6B5450">Slide until the face looks like you. VEU clients start from the skin colour measured at their consultation.</p>
+</div>
+<div>
+<h2 style="margin: 0 0 8px; padding: 0 20px; font-size: 13px; font-weight: 400; color: #6B5450; text-transform: uppercase; letter-spacing: 0.3px">Application</h2>
+<div style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 18px; overflow: hidden">
+<div style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 7px 16px; border-bottom: 0.5px solid rgba(147,45,40,0.14)"><span style="font-size: 17px; width: 72px">Finish</span><div role="radiogroup" aria-label="Finish" style="display: grid; grid-template-columns: repeat({{finsN}}, minmax(0, 1fr)); background: rgba(255,255,255,0.5); border-radius: 9px; padding: 2px; flex: 1">
+<sc-for list="{{fins}}" as="o" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{o.on}}" onClick="{{o.pick}}" style="height: 32px; border: 0; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; {{o.style}}">{{o.label}}</button></sc-for>
+</div></div>
+<div style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 7px 16px"><span style="font-size: 17px; width: 72px">Look</span><div role="radiogroup" aria-label="Look" style="display: grid; grid-template-columns: repeat({{looksN}}, minmax(0, 1fr)); background: rgba(255,255,255,0.5); border-radius: 9px; padding: 2px; flex: 1">
+<sc-for list="{{looks}}" as="o" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{o.on}}" onClick="{{o.pick}}" style="height: 32px; border: 0; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; {{o.style}}">{{o.label}}</button></sc-for>
+</div></div>
+</div>
+</div>
+<div style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 18px; overflow: hidden">
+<button type="button" aria-expanded="{{sciOpen}}" onClick="{{toggleSci}}" style="width: 100%; min-height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: transparent; border: 0; cursor: pointer; font-size: 17px; color: #000; text-align: left"><span style="flex: 1">The science</span><span style="font-size: 15px; color: #932D28">{{sciLabel}}</span></button>
+<sc-if value="{{sciOpen}}" hint-placeholder-val="{{false}}">
+<sc-for list="{{sci}}" as="r" hint-placeholder-count="6">
+<div style="margin-left: 16px; padding: 10px 16px 10px 0; border-top: 0.5px solid rgba(147,45,40,0.14); display: flex; flex-direction: column; gap: 2px">
+<div style="display: flex; justify-content: space-between; font-size: 17px"><span>{{r.label}}</span><span style="color: #6B5450; font-variant-numeric: tabular-nums">{{r.value}}</span></div>
+<span style="font-size: 13px; line-height: 18px; color: #6B5450">{{r.note}}</span>
+</div>
+</sc-for>
+<p style="margin: 0; padding: 10px 16px 14px; border-top: 0.5px solid rgba(147,45,40,0.14); font-size: 13px; line-height: 18px; color: #6B5450">Screens are not colour-calibrated, so previews are close approximations. Product colours here are placeholders.</p>
+</sc-if>
+</div>
+</div>
+<nav aria-label="Tabs" style="position: absolute; left: 14px; right: 14px; bottom: 16px; height: 64px; box-sizing: border-box; padding-top: 8px; background: rgba(255,255,255,0.58); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.85); border-radius: 32px; box-shadow: 0 10px 30px rgba(147,45,40,0.14); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr))"><a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; color: #6B5450; font-size: 11px; font-weight: 500"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B5450" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="Learn.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; color: #6B5450; font-size: 11px; font-weight: 500"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B5450" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5C6.5 4.5 9.5 4.5 12 6c2.5-1.5 5.5-1.5 8-.5V19c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5z"/><path d="M12 6v13.5"/></svg><span>Learn</span></a><a href="Studio.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; color: #932D28; font-size: 11px; font-weight: 500"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#932D28" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c3 4 6 7.2 6 10.5a6 6 0 0 1-12 0c0-3.3 3-6.5 6-10.5z"/></svg><span>Studio</span></a><a href="Explore.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; color: #6B5450; font-size: 11px; font-weight: 500"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B5450" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span>Explore</span></a><a href="Me.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; color: #6B5450; font-size: 11px; font-weight: 500"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B5450" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></svg><span>Me</span></a></nav>
+<sc-if value="{{sheet}}" hint-placeholder-val="{{false}}">
+<div style="position: absolute; inset: 0; background: rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: flex-end">
+<div role="dialog" aria-label="Why not this one" style="background: rgba(253,248,245,0.82); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-radius: 12px 12px 0 0; padding: 8px 16px 34px; display: flex; flex-direction: column; gap: 14px">
+<span style="align-self: center; width: 36px; height: 5px; border-radius: 3px; background: #C7C7CC"></span>
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px">
+<h2 style="margin: 0; font-size: 22px; font-weight: 700">why not this one?</h2>
+<button type="button" onClick="{{closeSheet}}" style="border: 0; background: transparent; color: #932D28; font-size: 17px; min-height: 44px; cursor: pointer">Not now</button>
+</div>
+<div role="radiogroup" aria-label="Reason" style="background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 18px; overflow: hidden">
+<sc-for list="{{reasons}}" as="o" hint-placeholder-count="3">
+<button type="button" role="radio" aria-checked="{{o.on}}" onClick="{{o.pick}}" style="width: 100%; min-height: 50px; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: transparent; border: 0; border-bottom: 0.5px solid rgba(147,45,40,0.14); text-align: left; cursor: pointer; font-size: 17px; color: #000">
+<span style="flex: 1">{{o.label}}</span>
+<sc-if value="{{o.on}}" hint-placeholder-val="{{false}}"><svg width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="#932D28" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 7.5 6.5 12 16.5 1.5"/></svg></sc-if>
+</button>
+</sc-for>
+</div>
+<sc-if value="{{recErr}}" hint-placeholder-val="{{false}}"><span role="alert" style="margin: -6px 4px 0; font-size: 13px; color: #C4001A">Pick a reason first</span></sc-if>
+<sc-if value="{{noRecs}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{recommend}}" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 26px; background: #932D28; color: #fff; font-size: 17px; font-weight: 600; border: 0; width: 100%; cursor: pointer">Recommend me</button></sc-if>
+<sc-if value="{{hasRecs}}" hint-placeholder-val="{{false}}">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="padding: 0 4px; font-size: 13px; color: #6B5450; text-transform: uppercase; letter-spacing: 0.3px">Try these instead</span>
+<div style="background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 18px; overflow: hidden">
+<sc-for list="{{recs}}" as="r" hint-placeholder-count="3">
+<button type="button" onClick="{{r.pick}}" style="width: 100%; min-height: 60px; display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: transparent; border: 0; border-bottom: 0.5px solid rgba(147,45,40,0.14); text-align: left; cursor: pointer; color: #000">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: {{r.hex}}; flex-shrink: 0"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 17px">{{r.name}}</span><span style="font-size: 13px; color: #6B5450">{{r.line}}</span></span>
+<svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="rgba(147,45,40,0.14)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6"/></svg>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 390, "height": 844}}'>
+class Component extends DCLogic {
+state = { mode: 'lips', sel: { lips: 0, cheeks: 0, eyes: 0 }, fin: null, look: 1, skinT: 40, lipT: 50, skinC: null, lipC: null, skinText: null, lipText: null, split: 50, zoomed: true, liked: {}, sci: false, sheet: false, reason: null, recs: null, recErr: false };
+data() {
+return {
+lips: [
+{ brand: 'Romand', name: 'Juicy Lasting Tint', shade: '04 Coral Sunrise', hex: '#E5584A', fin: 0 },
+{ brand: 'Peripera', name: 'Water Bare Tint', shade: 'CR701 Coral Petal', hex: '#EE7B6B', fin: 0 },
+{ brand: 'MAC', name: 'Lustreglass Sheer-Shine Lipstick', shade: 'Dial Up Warmth', hex: '#E8906E', fin: 0 },
+{ brand: 'Dior', name: 'Addict Lip Glow Oil', shade: '004 Coral', hex: '#F07A62', fin: 0 },
+{ brand: 'Dior', name: 'Rouge Dior On Stage', shade: '028 Actrice', hex: '#D8432F', fin: 2 }
+],
+cheeks: [
+{ brand: 'Rare Beauty', name: 'Soft Pinch Liquid Blush', shade: 'Joy', hex: '#F0684F', fin: 1 },
+{ brand: 'HERORANGE', name: 'Liquid Blush Stick', shade: '05 Coral Jelly', hex: '#F2836E', fin: 0 },
+{ brand: 'Patrick Ta', name: 'Double-Take Blush', shade: "She's Coral", hex: '#EB8A6A', fin: 2 },
+{ brand: 'Sephora Collection', name: 'Blush & Go', shade: 'Puff', hex: '#F29A8B', fin: 1 }
+],
+eyes: [
+{ brand: '3CE', name: 'Multi Eye Color Palette', shade: 'Soft Petal', hex: '#D9957A', fin: 1 },
+{ brand: 'Judydoll', name: 'Six-Color Eyeshadow Palette', shade: '02 Champagne Gold', hex: '#D9AE72', fin: 0 },
+{ brand: 'NARS', name: 'Total Seduction Eyeshadow Stick', shade: 'Warm Taupe', hex: '#A07E66', fin: 1 },
+{ brand: 'Ace Beauté', name: 'Whimsical Bloom Palette', shade: 'Rusty Orange', hex: '#C2653C', fin: 2 }
+],
+skinRamp: ['#F3D7C4', '#E4B89D', '#BC896F', '#9A6A50', '#6E4A36', '#4A2F22'],
+lipRamp: ['#E8B9B2', '#C98A84', '#9E5954', '#7A3F3B', '#56302D'],
+photo: {"base": {"skin": "#BC896F", "lips": "#9E5954", "cheek": "#DAA88F", "lid": "#9E705D"}, "lipsc": {"skin": "#C68D6E", "lips": "#AA5950"}, "cheekc": {"skin": "#CB967A", "lips": "#9F5650", "cheek": "#DEA88D"}, "eyec": {"skin": "#C79277", "lid": "#B6836C"}},
+alpha: { lips: [0.42, 0.7, 0.9], cheeks: [0.28, 0.45, 0.6], eyes: [0.35, 0.55, 0.75] },
+target: { lips: [58, 58], cheeks: [68, 45], eyes: [62, 35] },
+lookT: { lips: [[6, 16], [16, 32], [32, 60]], cheeks: [[4, 10], [10, 20], [20, 40]], eyes: [[4, 10], [10, 20], [20, 40]] },
+zoom: { lips: [150, 252, 2.7], cheeks: [150, 205, 1.7], eyes: [150, 152, 2.3] }
+};
+}
+rgb(h) { return [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); }
+hex(c) { return '#' + c.map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('').toUpperCase(); }
+lin(v) { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
+unlin(v) { const s = v <= 0.0031308 ? v * 12.92 : 1.055 * Math.pow(v, 1 / 2.4) - 0.055; return s * 255; }
+mix(a, b, t) { const A = this.rgb(a).map(v => this.lin(v)), B = this.rgb(b).map(v => this.lin(v)); return this.hex(A.map((v, i) => this.unlin(v * (1 - t) + B[i] * t))); }
+lab(h) { const [r, g, b] = this.rgb(h).map(v => this.lin(v)); let x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047, y = r * 0.2126 + g * 0.7152 + b * 0.0722, z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883; const f = t => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116; x = f(x); y = f(y); z = f(z); return [116 * y - 16, 500 * (x - y), 200 * (y - z)]; }
+lch(h) { const l = this.lab(h); let a = Math.atan2(l[2], l[1]) * 180 / Math.PI; if (a < 0) a += 360; return [l[0], Math.hypot(l[1], l[2]), a]; }
+rampAt(stops, t) { const p = t / 100 * (stops.length - 1), i = Math.min(stops.length - 2, Math.floor(p)); return this.mix(stops[i], stops[i + 1], p - i); }
+seg(labels, cur, set) { const on = 'background: #fff; color: #000; box-shadow: 0 1px 3px rgba(0,0,0,0.15)', off = 'background: transparent; color: #000'; return labels.map((label, i) => ({ label, on: cur === i, style: cur === i ? on : off, pick: () => set(i) })); }
+bases(s) { const D = this.data(); const skin = s.skinC || this.rampAt(D.skinRamp, s.skinT); const lip = s.lipC || this.rampAt(D.lipRamp, s.lipT); return { skin, lips: lip, cheeks: this.mix(skin, '#E3907E', 0.16), eyes: this.mix(skin, '#7A5646', 0.1) }; }
+apply(mode, p, fin, base) { const D = this.data(); return this.mix(base, p.hex, D.alpha[mode][fin]); }
+hexIn(v, key, textKey) { const t = v.trim(); const ok = /^#?[0-9a-fA-F]{6}$/.test(t); const o = {}; o[textKey] = t; if (ok) o[key] = ('#' + t.replace('#', '')).toUpperCase(); this.setState(o); }
+luma(hx) { const c = this.rgb(hx); return (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) / 255; }
+layer(B, T, op, on) {
+if (!on) return { L: 'opacity: 0', C: 'opacity: 0' };
+const lb = Math.max(0.02, this.luma(B)), r = this.luma(T) / lb;
+let L;
+if (r <= 1) { const g = Math.round(255 * r); L = 'background: rgb(' + g + ',' + g + ',' + g + '); mix-blend-mode: multiply'; }
+else { const sc = Math.min(1, (lb * r - lb) / Math.max(0.02, 1 - lb)); const g = Math.round(255 * sc); L = 'background: rgb(' + g + ',' + g + ',' + g + '); mix-blend-mode: screen'; }
+return { L, C: 'background: ' + T + '; mix-blend-mode: color; opacity: ' + op };
+}
+renderVals() {
+const s = this.state, D = this.data(), mode = s.mode, list = D[mode];
+const B0 = this.bases(s);
+const idx = Math.min(s.sel[mode], list.length - 1), p = list[idx];
+const fin = s.fin === null ? p.fin : s.fin;
+const base = B0[mode];
+const per = this.apply(mode, p, fin, base);
+const area = {};
+['lips', 'cheeks', 'eyes'].forEach(m => { const q = D[m][s.sel[m]]; const f = m === mode ? fin : q.fin; area[m] = this.apply(m, q, f, B0[m]); });
+const P = this.lch(per), Bl = this.lab(base), O = this.lab(per);
+const dL = Math.abs(Bl[0] - O[0]), dE = Math.hypot(Bl[0] - O[0], Bl[1] - O[1], Bl[2] - O[2]);
+const warm = P[2] > 15 && P[2] < 80;
+const [tL, tC] = D.target[mode];
+const sea = 100 - Math.abs(P[0] - tL) - Math.abs(P[1] - tC) * 0.8 - (warm ? 0 : 35);
+const lt = D.lookT[mode][s.look];
+const lk = dE < lt[0] ? 100 - (lt[0] - dE) * 4 : dE > lt[1] ? 100 - (dE - lt[1]) * 3 : 100;
+const score = Math.max(0, Math.min(100, Math.round(sea * 0.6 + lk * 0.4)));
+const chroma = P[1] > 55 ? 'bright' : P[1] > 35 ? 'clear' : 'soft';
+const L2 = D.lookT[mode];
+const effect = dE < L2[0][1] ? 'close to your natural colour' : dE < L2[1][1] ? 'reads as everyday colour' : 'reads bold';
+const reason = (warm ? 'Warm' : 'Cool') + ' and ' + chroma + ', ' + effect + '.';
+const verdict = score >= 75 ? 'Strong match' : score >= 55 ? 'Wearable' : 'Not your best';
+const key = mode + '-' + idx, liked = !!s.liked[key];
+const finNames = ['Sheer', 'Satin', 'Matte'];
+const z = D.zoom[mode];
+const tf = s.zoomed ? 'translate(' + Math.round(150 - z[0] * z[2]) + 'px, ' + Math.round(180 - z[1] * z[2]) + 'px) scale(' + z[2] + ')' : 'translate(0px, 0px) scale(1)';
+const areaName = { lips: 'LIPS', cheeks: 'CHEEKS', eyes: 'EYES' }[mode];
+const reasons = [{ id: 'colour', label: "I don't like the colour" }, { id: 'bright', label: 'Too bright for me' }, { id: 'temp', label: warm ? 'Too warm for me' : 'Too cool for me' }];
+const recs = s.recs ? s.recs.map(j => { const q = list[j], qp = this.apply(mode, q, q.fin, base), Q = this.lch(qp); const line = s.reason === 'bright' ? 'Softer: chroma ' + Math.round(Q[1]) + ' vs ' + Math.round(P[1]) : s.reason === 'temp' ? (warm ? 'Cooler, more pink' : 'Warmer, more peach') : 'A different hue family'; return { hex: qp, name: q.brand + ' ' + q.shade, line, pick: () => this.setState({ sel: Object.assign({}, s.sel, { [mode]: j }), fin: null, sheet: false, recs: null, reason: null, zoomed: true }) }; }) : [];
+const shade = this.mix(B0.skin, '#3A2418', 0.2);
+const PH = D.photo, active = s.zoomed ? { lips: 'lipsc', cheeks: 'cheekc', eyes: 'eyec' }[mode] : 'base';
+const sv = {};
+['base', 'lipsc', 'cheekc', 'eyec'].forEach(k => {
+const ph = PH[k], on = k === active;
+const mk = after => {
+const o = {};
+const sk = this.layer(ph.skin, B0.skin, 0.85, true); o.skinL = sk.L; o.skinC = sk.C;
+if (ph.lips) { const l = this.layer(ph.lips, after ? area.lips : B0.lips, 0.95, true); o.lipsL = l.L; o.lipsC = l.C; }
+if (ph.cheek) { const c = this.layer(B0.cheeks, area.cheeks, 0.9, after); o.cheekL = c.L; o.cheekC = c.C; }
+if (ph.lid) { const d = this.layer(B0.eyes, area.eyes, 0.85, after); o.lidL = d.L; o.lidC = d.C; }
+return o;
+};
+sv[k] = { vis: on ? 'opacity: 1; transform: scale(1)' : 'opacity: 0; transform: scale(' + (k === 'base' ? 1.25 : 0.85) + ')', after: mk(true), before: mk(false) };
+});
+return {
+sv,
+modes: this.seg(['Lips', 'Cheeks', 'Eyes'], ['lips', 'cheeks', 'eyes'].indexOf(mode), i => this.setState({ mode: ['lips', 'cheeks', 'eyes'][i], fin: null, recs: null, reason: null, zoomed: true })), modesN: 3,
+skin: B0.skin, skinShade: shade, lip: area.lips, cheek: area.cheeks, lid: area.eyes, lipB: B0.lips, cheekB: B0.cheeks, lidB: B0.eyes,
+split: s.split, splitPct: s.split + '%', clipRight: (100 - s.split) + '%', onSplit: e => this.setState({ split: Number(e.target.value) }),
+faceTransform: tf, faceAria: 'Your face with ' + p.brand + ' ' + p.shade + ' on your ' + mode,
+zoomed: s.zoomed, notZoomed: !s.zoomed, zoomOut: () => this.setState({ zoomed: false }), zoomIn: () => this.setState({ zoomed: true }),
+hudTag: areaName + ' · ON YOU',
+onYou: per, onYouHex: base + ' → ' + per, hudNums: 'L ' + Math.round(P[0]) + '  C ' + Math.round(P[1]) + '  h ' + Math.round(P[2]) + '°  ΔE ' + Math.round(dE),
+prodBrand: p.brand, prodName: p.name, prodShade: p.shade, finLabel: finNames[fin],
+chips: list.map((q, j) => ({ hex: this.apply(mode, q, q.fin, base), short: q.shade, aria: q.brand + ' ' + q.shade, ring: j === idx ? 'box-shadow: 0 0 0 2.5px #FDF8F5, 0 0 0 4.5px #932D28' : 'box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12)', pick: () => this.setState({ sel: Object.assign({}, s.sel, { [mode]: j }), fin: null, zoomed: true }) })),
+verdict: verdict + ' for your warm lean', score, scorePct: score + '%', reason,
+heartFill: liked ? '#FF4D6A' : 'none', heartStroke: liked ? '#FF4D6A' : '#FFFFFF',
+onLike: () => this.setState({ liked: Object.assign({}, s.liked, { [key]: !liked }) }),
+onDislike: () => this.setState({ sheet: true, reason: null, recs: null, recErr: false }),
+skinT: s.skinT, lipT: s.lipT, lipBase: B0.lips,
+skinTrack: 'linear-gradient(90deg, ' + D.skinRamp.join(', ') + ')', lipTrack: 'linear-gradient(90deg, ' + D.lipRamp.join(', ') + ')',
+onSkin: e => this.setState({ skinT: Number(e.target.value), skinC: null, skinText: null }),
+onLip: e => this.setState({ lipT: Number(e.target.value), lipC: null, lipText: null }),
+skinText: s.skinText === null ? B0.skin : s.skinText, lipText: s.lipText === null ? B0.lips : s.lipText,
+onSkinHex: e => this.hexIn(e.target.value, 'skinC', 'skinText'), onLipHex: e => this.hexIn(e.target.value, 'lipC', 'lipText'),
+fins: this.seg(finNames, fin, i => this.setState({ fin: i })), finsN: 3,
+looks: this.seg(['Natural', 'Everyday', 'Bold'], s.look, i => this.setState({ look: i })), looksN: 3,
+sciOpen: s.sci, sciLabel: s.sci ? 'Hide' : 'Show', toggleSci: () => this.setState({ sci: !s.sci }),
+sci: [
+{ label: 'Lightness (L)', value: String(Math.round(P[0])), note: 'Light seasons sit high, deep seasons sit low.' },
+{ label: 'Chroma (C)', value: String(Math.round(P[1])), note: 'Higher is brighter, lower is more muted.' },
+{ label: 'Hue angle (h)', value: Math.round(P[2]) + '°', note: 'Where the colour sits on the colour wheel.' },
+{ label: 'Temperature', value: warm ? 'Warm' : 'Cool', note: 'Read from the hue angle.' },
+{ label: 'Contrast (ΔL)', value: String(Math.round(dL)), note: 'Lightness gap between the shade and your own colour.' },
+{ label: 'Colour shift (ΔE)', value: String(Math.round(dE)), note: 'Under 2 is invisible; over 10 is clearly a different colour.' }
+],
+sheet: s.sheet, closeSheet: () => this.setState({ sheet: false }),
+reasons: reasons.map(r => ({ label: r.label, on: s.reason === r.id, pick: () => this.setState({ reason: r.id, recErr: false, recs: null }) })),
+recErr: s.recErr, noRecs: !s.recs, hasRecs: !!s.recs, recs,
+recommend: () => {
+if (!s.reason) { this.setState({ recErr: true }); return; }
+const others = list.map((q, j) => ({ j, Q: this.lch(this.apply(mode, q, q.fin, base)) })).filter(o => o.j !== idx);
+let sorted;
+if (s.reason === 'bright') sorted = others.sort((a, b) => a.Q[1] - b.Q[1]);
+else if (s.reason === 'temp') sorted = others.sort((a, b) => warm ? a.Q[2] - b.Q[2] : b.Q[2] - a.Q[2]);
+else sorted = others.sort((a, b) => Math.abs(b.Q[2] - P[2]) - Math.abs(a.Q[2] - P[2]));
+this.setState({ recs: sorted.slice(0, 3).map(o => o.j) });
+}
+};
+}
+}
+</script>
+</body>
+</html>

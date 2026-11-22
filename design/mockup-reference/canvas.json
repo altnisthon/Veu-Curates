@@ -1,0 +1,113 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-22T07:20:00Z"
+ },
+ "title": "VEU Curates 2.0 — iOS mockup",
+ "launch": {
+  "view": "canvas"
+ },
+ "pages": [],
+ "boards": {
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Home",
+   "is_interactive": true,
+   "radius": 44
+  },
+  "Quiz.dc.html": {
+   "x": 470,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Undertone lean",
+   "is_interactive": true,
+   "radius": 44
+  },
+  "Result.dc.html": {
+   "x": 940,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Lean result + sign-in",
+   "is_interactive": true,
+   "radius": 44
+  },
+  "Studio.dc.html": {
+   "x": 1410,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Shade Studio",
+   "is_interactive": true,
+   "radius": 44
+  },
+  "Explore.dc.html": {
+   "x": 1880,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Explore",
+   "is_interactive": true,
+   "radius": 44
+  },
+  "Product.dc.html": {
+   "x": 2350,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Product detail",
+   "is_interactive": true,
+   "radius": 44
+  },
+  "Learn.dc.html": {
+   "x": 2820,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Learn",
+   "is_interactive": true,
+   "radius": 44
+  },
+  "Me.dc.html": {
+   "x": 3290,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Me",
+   "is_interactive": true,
+   "radius": 44
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "Quiz.dc.html",
+  "Result.dc.html",
+  "Studio.dc.html",
+  "Explore.dc.html",
+  "Product.dc.html",
+  "Learn.dc.html",
+  "Me.dc.html"
+ ],
+ "notes": {
+  "flowtitle": {
+   "x": 0,
+   "y": -300,
+   "text": "VEU Curates 2.0 · v2 soft futurism (VEU colours)",
+   "kind": "title1",
+   "maxW": 3680
+  },
+  "readme": {
+   "x": -640,
+   "y": 0,
+   "w": 520,
+   "text": "Press Play on any screen and tap through. Shade Studio is fully working: lips/cheeks, your colour slider, finish, swipes, look, like and dislike with reasons. Product colours are placeholders until swatch research is done.",
+   "size": "m"
+  }
+ },
+ "designSystems": []
+}
