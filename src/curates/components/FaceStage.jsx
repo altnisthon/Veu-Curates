@@ -68,7 +68,7 @@ const clamp = (v) => Math.max(-MAX_TURN, Math.min(MAX_TURN, v));
 
 // current / defaults: colour per area { skin, lips, cheeks, eyes }. chip: { hex, text } shown bottom left.
 export default function FaceStage({ area, zoomed, onToggleZoom, current, defaults, label, chip }) {
-  const where = zoomed ? `a close-up of the ${AREA_LABEL[area].toLowerCase()}` : 'the full face';
+  const where = zoomed && area ? `a close-up of the ${AREA_LABEL[area].toLowerCase()}` : 'the full face';
   const [turn, setTurn] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [hinted, setHinted] = useState(false);
@@ -87,7 +87,7 @@ export default function FaceStage({ area, zoomed, onToggleZoom, current, default
     return () => ro.disconnect();
   }, []);
 
-  const camera = cameraFor(zoomed ? area : null, size);
+  const camera = cameraFor(zoomed && area ? area : null, size);
 
   // Ease back to centre a moment after the last keyboard turn.
   const settleSoon = () => { clearTimeout(back.current); back.current = setTimeout(() => setTurn(0), 1600); };
@@ -138,8 +138,8 @@ export default function FaceStage({ area, zoomed, onToggleZoom, current, default
       </div>
 
       <div className="cu-stage__top">
-        <span className="cu-stage__tag" aria-hidden="true">{AREA_LABEL[area].toUpperCase()} · ON YOU</span>
-        <button type="button" className="cu-stage__btn" onClick={onToggleZoom}>{zoomed ? 'Full face' : 'Zoom in'}</button>
+        <span className="cu-stage__tag" aria-hidden="true">{area ? `${AREA_LABEL[area].toUpperCase()} · ON YOU` : 'YOUR FACE'}</span>
+        {area && <button type="button" className="cu-stage__btn" onClick={onToggleZoom}>{zoomed ? 'Full face' : 'Zoom in'}</button>}
       </div>
       <div className="cu-stage__bottom" aria-hidden="true">
         <span className="cu-stage__chip">

@@ -45,6 +45,11 @@ export const labToHex = ([L, a, b]) => {
   return rgbToHex(lin.map((v) => fromLinear(Math.max(0, Math.min(1, v)))));
 };
 
+export const lchToHex = ([L, C, h]) => {
+  const r = (h * Math.PI) / 180;
+  return labToHex([L, C * Math.cos(r), C * Math.sin(r)]);
+};
+
 // Move `hex` by the same Lab step as fromHex -> toHex.
 // Each photo was measured separately, so a close-up's skin is not exactly the full face's skin.
 // Shifting each photo by the user's change keeps every scene consistent and unchanged at the defaults.

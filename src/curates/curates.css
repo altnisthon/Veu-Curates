@@ -263,6 +263,25 @@
 .cu-range::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 0; box-shadow: 0 0.5px 4px rgba(0, 0, 0, 0.35); }
 .cu-range::-moz-range-track { background: transparent; }
 
+/* tone wheel */
+.cu-studio-hint { margin-top: 8px; }
+.cu-tone { padding: 12px 12px 4px; display: flex; flex-direction: column; gap: 10px; }
+.cu-tone .cu-seg { align-self: center; width: 180px; }
+.cu-wheel { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0; }
+.cu-wheel__row { display: flex; align-items: center; gap: 8px; }
+.cu-wheel__axis { font-size: 12px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text-secondary); width: 40px; text-align: center; }
+.cu-wheel__axis--top, .cu-wheel__axis--bottom { width: auto; }
+.cu-wheel__disc { position: relative; flex-shrink: 0; border-radius: 50%; touch-action: none; cursor: crosshair; box-shadow: 0 8px 24px rgba(110, 31, 27, 0.14); }
+.cu-wheel__canvas { display: block; border-radius: 50%; }
+.cu-wheel__cross { position: absolute; inset: 0; pointer-events: none; border-radius: 50%;
+  background: linear-gradient(90deg, transparent calc(50% - 0.5px), rgba(255, 255, 255, 0.45) 50%, transparent calc(50% + 0.5px)),
+    linear-gradient(0deg, transparent calc(50% - 0.5px), rgba(255, 255, 255, 0.45) 50%, transparent calc(50% + 0.5px)); }
+.cu-wheel__knob { position: absolute; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); outline: none; }
+.cu-wheel__knob::before { content: ''; position: absolute; inset: -10px; border-radius: 50%; } /* 50px hit area */
+.cu-wheel__knob:focus-visible { box-shadow: 0 0 0 3px var(--veu-crimson), 0 2px 8px rgba(0, 0, 0, 0.35); }
+.cu-tone__readout { padding: 4px 4px 8px; }
+.cu-tone__words { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+
 /* shade card */
 .cu-shadecard { padding: 16px 0 18px; display: flex; flex-direction: column; gap: 14px; }
 .cu-shadecard__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 0 16px; }

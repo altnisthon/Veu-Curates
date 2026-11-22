@@ -1,14 +1,17 @@
 // Shade Studio.
-// Step 1: the face stage, area zoom, and "Your face" (skin + lip sliders and hex).
-// Step 2: placeholder shades per area, finish, look, fit score with a plain-English reason, and The science.
+// On entry: her bare face and "Your face" (a tone wheel for skin and lips: cool to warm, light to deep).
+// Tapping Lips, Cheeks or Eyes zooms in and brings out the shades for that area: placeholder shades, finish,
+// look, fit score with a plain-English reason, and The science. Only areas the user has opened wear makeup.
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FINISHES, LEANS, LIP_RAMP, LOOKS, SKIN_RAMP, areaBases, hexToLch, normaliseHex, perceived, rampAt, scoreShade } from '../../lib/colour';
+import { FINISHES, LEANS, LOOKS, areaBases, hexToLch, normaliseHex, perceived, scoreShade } from '../../lib/colour';
 import { ScreenHeader } from '../components/Chrome';
 import FaceStage from '../components/FaceStage';
+import ToneWheel from '../components/ToneWheel';
 import { leanById, scoringLean } from '../lib/leans';
 import { usePrefs } from '../lib/prefs';
 import { SHADES, shortName } from '../lib/shades';
+import { HER, describe, hexToWheel, wheelToHex } from '../lib/tone';
 import { track } from '../lib/track';
 
 const AREAS = [
@@ -17,13 +20,10 @@ const AREAS = [
   { id: 'eyes', label: 'Eyes', product: 'eyeshadow' },
 ];
 
-// Slider defaults equal the featured character's own photographed tones.
-const DEFAULT_T = { skin: 40, lips: 50 };
-const RAMPS = { skin: SKIN_RAMP, lips: LIP_RAMP };
-const DEFAULT_BASES = areaBases(rampAt(SKIN_RAMP, DEFAULT_T.skin), rampAt(LIP_RAMP, DEFAULT_T.lips));
+// The default is the featured character's own photographed colouring, so nothing changes until the user does.
+const DEFAULT_BASES = areaBases(HER.skin, HER.lips);
 const LOG_DELAY = 800; // ms after the last change before we save and log it
-
-const trackStyle = (stops) => ({ background: `linear-gradient(90deg, ${stops.join(', ')})` });
+const EMPTY_TONE = { skin: null, lips: null, skinHex: null, lipHex: null };
 const isWarm = (h) => h >= LEANS.warm.hue[0] && h <= LEANS.warm.hue[1];
 
 function Segmented({ label, options, value, onChange }) {
@@ -36,37 +36,32 @@ function Segmented({ label, options, value, onChange }) {
   );
 }
 
-function ColourRow({ part, label, t, hex, overridden, onSlide, onHex }) {
+// The readout under the wheel: swatch, plain-English reading and an editable colour code.
+function ToneReadout({ label, hex, pos, onHex }) {
   const [text, setText] = useState(hex);
   useEffect(() => { setText(hex); }, [hex]);
   const commit = () => {
     const h = normaliseHex(text);
     if (h && h !== hex) onHex(h); else setText(hex);
   };
+  const words = describe(pos);
   return (
-    <div className="cu-facerow">
-      <div className="cu-facerow__top">
-        <span className="cu-facerow__dot" style={{ background: hex }} aria-hidden="true" />
-        <label htmlFor={`${part}-range`} className="cu-facerow__label">{label}</label>
-        <input type="text" className="cu-facerow__hex" value={text} spellCheck="false" autoCapitalize="characters" maxLength={7}
-          aria-label={`${label} colour code`} onChange={(e) => setText(e.target.value)} onBlur={commit}
-          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commit(); e.currentTarget.blur(); } }} />
-      </div>
-      <input id={`${part}-range`} type="range" className="cu-range" min="0" max="100" step="1" value={t}
-        style={trackStyle(RAMPS[part])} aria-valuetext={overridden ? `Custom colour ${hex}` : hex}
-        onChange={(e) => onSlide(Number(e.target.value))} />
+    <div className="cu-facerow__top cu-tone__readout">
+      <span className="cu-facerow__dot" style={{ background: hex }} aria-hidden="true" />
+      <span className="cu-facerow__label">{label} <span className="cu-tone__words">{words.undertone} · {words.depth}</span></span>
+      <input type="text" className="cu-facerow__hex" value={text} spellCheck="false" autoCapitalize="characters" maxLength={7}
+        aria-label={`${label} colour code`} onChange={(e) => setText(e.target.value)} onBlur={commit}
+        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commit(); e.currentTarget.blur(); } }} />
     </div>
   );
 }
 
 export default function Studio() {
   const { prefs, update } = usePrefs();
-  const saved = prefs.face || {};
-  const [face, setFace] = useState({
-    skinT: saved.skinT ?? DEFAULT_T.skin, lipT: saved.lipT ?? DEFAULT_T.lips,
-    skinHex: saved.skinHex ?? null, lipHex: saved.lipHex ?? null,
-  });
-  const [area, setArea] = useState('lips');
+  const [face, setFace] = useState({ ...EMPTY_TONE, ...(prefs.tone || {}) });
+  const [wheelPart, setWheelPart] = useState('skin');
+  const [area, setArea] = useState(null); // nothing picked yet: no shades, no makeup
+  const [opened, setOpened] = useState({ lips: false, cheeks: false, eyes: false });
   const [zoomed, setZoomed] = useState(false);
   const [sel, setSel] = useState({ lips: 0, cheeks: 0, eyes: 0 });
   const [finOverride, setFinOverride] = useState({ lips: null, cheeks: null, eyes: null });
@@ -78,10 +73,12 @@ export default function Studio() {
   const timer = useRef(null);
 
   // ---------- the user's face ----------
-  const user = {
-    skin: face.skinHex || rampAt(SKIN_RAMP, face.skinT),
-    lips: face.lipHex || rampAt(LIP_RAMP, face.lipT),
+  const toneOf = (f, part) => {
+    const hex = part === 'skin' ? f.skinHex : f.lipHex;
+    return hex || (f[part] ? wheelToHex(part, f[part]) : HER[part]);
   };
+  const user = { skin: toneOf(face, 'skin'), lips: toneOf(face, 'lips') };
+  const posOf = (part) => face[part] || hexToWheel(part, user[part]);
   const bases = areaBases(user.skin, user.lips);
 
   // Save to the device and log once the user pauses, not on every pixel of a drag.
@@ -89,9 +86,9 @@ export default function Studio() {
     pending.current[part] = via;
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
-      update({ face: next });
-      const skin = next.skinHex || rampAt(SKIN_RAMP, next.skinT);
-      const lips = next.lipHex || rampAt(LIP_RAMP, next.lipT);
+      update({ tone: next });
+      const skin = toneOf(next, 'skin');
+      const lips = toneOf(next, 'lips');
       Object.entries(pending.current).forEach(([p, how]) => track('slider_adjusted', { part: p, via: how, skin, lips }));
       pending.current = {};
     }, LOG_DELAY);
@@ -103,20 +100,22 @@ export default function Studio() {
     setFace(next);
     schedule(next, part, via);
   };
-  const custom = face.skinHex || face.lipHex || face.skinT !== DEFAULT_T.skin || face.lipT !== DEFAULT_T.lips;
+  const custom = !!(face.skinHex || face.lipHex || face.skin || face.lips);
 
   // ---------- shades ----------
   const finOf = (a) => finOverride[a] ?? SHADES[a][sel[a]].fin;
   const onYou = (a) => perceived(a, SHADES[a][sel[a]].hex, finOf(a), bases[a]);
-  // Every area wears its picked shade, so the full face shows the whole look.
-  const current = { ...bases, lips: onYou('lips'), cheeks: onYou('cheeks'), eyes: onYou('eyes') };
+  // Areas the user has opened wear their picked shade, so the full face builds up the whole look.
+  const current = { ...bases };
+  ['lips', 'cheeks', 'eyes'].forEach((a) => { if (opened[a]) current[a] = onYou(a); });
 
-  const shade = SHADES[area][sel[area]];
-  const fin = finOf(area);
-  const per = current[area];
-  const fit = scoreShade({ area, baseHex: bases[area], perceivedHex: per, lean: scoring, look });
-  const P = fit.lch;
-  const dL = P[0] - hexToLch(bases[area])[0];
+  // Everything below only exists once an area is picked.
+  const shade = area && SHADES[area][sel[area]];
+  const fin = area && finOf(area);
+  const per = area ? current[area] : user.skin;
+  const fit = area && scoreShade({ area, baseHex: bases[area], perceivedHex: per, lean: scoring, look });
+  const P = fit ? fit.lch : [0, 0, 0];
+  const dL = area ? P[0] - hexToLch(bases[area])[0] : 0;
   const leanWord = lean && lean.id !== 'not_sure' ? `your ${lean.id} lean` : 'a neutral start';
 
   const logView = (a, i, extra = {}) => {
@@ -126,6 +125,7 @@ export default function Studio() {
 
   const pickArea = (id) => {
     setArea(id);
+    setOpened((o) => ({ ...o, [id]: true }));
     setZoomed(true);
     logView(id, sel[id], { from: 'area' });
   };
@@ -137,7 +137,7 @@ export default function Studio() {
   const pickFinish = (i) => setFinOverride((f) => ({ ...f, [area]: i }));
   const pickLook = (i) => update({ look: i });
 
-  const science = [
+  const science = !area ? [] : [
     { label: 'Lightness (L)', value: String(Math.round(P[0])), note: 'Higher is lighter, lower is deeper. 0 is black, 100 is white.' },
     { label: 'Chroma (C)', value: String(Math.round(P[1])), note: 'Higher is brighter, lower is more muted.' },
     { label: 'Hue angle (h)', value: `${Math.round(P[2])}°`, note: 'Where the colour sits on the colour wheel. Around 25° to 75° reads warm.' },
@@ -160,13 +160,16 @@ export default function Studio() {
               <button key={a.id} type="button" className={`cu-pill-btn${area === a.id ? ' is-on' : ''}`} aria-pressed={area === a.id} onClick={() => pickArea(a.id)}>{a.label}</button>
             ))}
           </div>
+          {!area && <p className="cu-fine cu-center cu-studio-hint">Tap lips, cheeks or eyes to see shades on her.</p>}
         </div>
 
         <div className="cu-pad-x">
           <FaceStage area={area} zoomed={zoomed} onToggleZoom={() => setZoomed((z) => !z)} current={current} defaults={DEFAULT_BASES}
-            label={`Wearing ${shade.brand} ${shade.shade} on the ${area}.`} chip={{ hex: per, text: `On you ${per}` }} />
+            label={area ? `Wearing ${shade.brand} ${shade.shade} on the ${area}.` : 'Bare face, matched to your skin and lips.'}
+            chip={area ? { hex: per, text: `On you ${per}` } : { hex: user.skin, text: `Skin ${user.skin}` }} />
         </div>
 
+        {area && (<>
         {/* the shade */}
         <section className="cu-pad-x" aria-labelledby="shade-name">
           <div className="glass cu-shadecard">
@@ -218,30 +221,31 @@ export default function Studio() {
           </div>
           <p className="cu-fine cu-pad-note">Finish changes how much colour shows. Look is the effect you're going for, and it shapes the fit score.</p>
         </section>
+        </>)}
 
         {/* your face */}
         <section className="cu-pad-x cu-gap-s" aria-labelledby="your-face">
           <h2 id="your-face" className="cu-section-label">Your face</h2>
-          <div className="glass cu-facecard">
-            <ColourRow part="skin" label="Skin" t={face.skinT} hex={user.skin} overridden={!!face.skinHex}
-              onSlide={(t) => change('skin', 'slider', { skinT: t, skinHex: null })}
-              onHex={(h) => change('skin', 'hex', { skinHex: h })} />
-            <ColourRow part="lips" label="Lips" t={face.lipT} hex={user.lips} overridden={!!face.lipHex}
-              onSlide={(t) => change('lips', 'slider', { lipT: t, lipHex: null })}
-              onHex={(h) => change('lips', 'hex', { lipHex: h })} />
+          <div className="glass cu-facecard cu-tone">
+            <Segmented label="Choose skin or lips" options={['Skin', 'Lips']} value={wheelPart === 'skin' ? 0 : 1} onChange={(i) => setWheelPart(i ? 'lips' : 'skin')} />
+            <ToneWheel key={wheelPart} part={wheelPart} label={wheelPart === 'skin' ? 'Skin' : 'Lips'} pos={posOf(wheelPart)}
+              onChange={(p) => change(wheelPart, 'wheel', wheelPart === 'skin' ? { skin: p, skinHex: null } : { lips: p, lipHex: null })} />
+            <ToneReadout label={wheelPart === 'skin' ? 'Skin' : 'Lips'} hex={user[wheelPart]} pos={posOf(wheelPart)}
+              onHex={(h) => change(wheelPart, 'hex', wheelPart === 'skin' ? { skinHex: h, skin: null } : { lipHex: h, lips: null })} />
           </div>
           <p className="cu-fine cu-pad-note">
-            Slide until the face looks like you. VEU clients will start from the skin colour measured at their consultation.
+            Drag across the wheel: left is cooler, right is warmer, up is lighter, down is deeper. Stop where the face looks like you.
+            VEU clients will start from the skin colour measured at their consultation.
           </p>
           {custom && (
-            <button type="button" className="cu-textbtn cu-pad-note"
-              onClick={() => change('both', 'reset', { skinT: DEFAULT_T.skin, lipT: DEFAULT_T.lips, skinHex: null, lipHex: null })}>
+            <button type="button" className="cu-textbtn cu-pad-note" onClick={() => change('both', 'reset', { ...EMPTY_TONE })}>
               Reset to her colouring
             </button>
           )}
         </section>
 
         {/* the science */}
+        {area && (
         <section className="cu-pad-x">
           <div className="glass cu-sci">
             <button type="button" className="cu-sci__toggle" aria-expanded={sciOpen} aria-controls="sci-panel" onClick={() => setSciOpen((o) => !o)}>
@@ -261,6 +265,7 @@ export default function Studio() {
             )}
           </div>
         </section>
+        )}
 
         <p className="cu-fine cu-pad-x cu-center">
           Screens aren't colour-calibrated, so previews are close approximations. Product colours here are placeholders until our swatch research is in.
