@@ -3,6 +3,7 @@
 
 create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
+  email text unique,                 -- copy of the auth email, for the admin email-list export
   first_name text,
   ig_handle text,
   analysed_before boolean,
@@ -13,7 +14,9 @@ create table if not exists public.profiles (
   lip_hex text,
   look smallint check (look between 0 and 2),
   pref_weights jsonb not null default '{}'::jsonb,
-  created_at timestamptz not null default now()
+  anon_id text,                      -- device id, links pre-sign-up events to this person
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 -- Skin hex measured in person by Ms Eunice (the booklet stays the full result).
@@ -111,8 +114,21 @@ create policy "own skin record" on public.client_skin for select using (auth.uid
 create policy "catalogue readable" on public.products for select using (active);
 create policy "shades readable" on public.shades for select using (true);
 create policy "swatches readable" on public.swatches for select using (true);
-create policy "anyone can log events" on public.events for insert with check (true);
+-- events: no browser policy. Events are written by /api/event and /api/signup with the service role,
+-- so nobody can log events as someone else.
 create policy "signed-in brand requests" on public.brand_requests for insert with check (auth.uid() = user_id);
 create policy "own lesson progress" on public.lesson_progress for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 -- Admin reads/writes (dashboard, catalogue, client skin entry) go through Vercel serverless routes
 -- using the service role key, never from the browser.
+
+-- Sign-up helper: find an existing auth user by email. Server-only (service role).
+create or replace function public.user_id_by_email(p_email text)
+returns uuid
+language sql
+security definer
+set search_path = ''
+as $$
+  select id from auth.users where lower(email) = lower(p_email) limit 1;
+$$;
+revoke execute on function public.user_id_by_email(text) from public, anon, authenticated;
+grant execute on function public.user_id_by_email(text) to service_role;
