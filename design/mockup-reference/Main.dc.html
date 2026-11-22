@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VEU Curates home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Montserrat:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#932D28;text-decoration:none}a:hover{color:#6E1F1B}
+input,button{font:inherit}
+.rv{transition:opacity 600ms ease, transform 600ms cubic-bezier(0.22,1,0.36,1)}
+.sc::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion: reduce){.rv{transition:none}}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif !important;font-weight:600 !important;letter-spacing:0 !important}
+h1{font-size:40px !important;line-height:44px !important}
+.serif{font-family:'Cormorant Garamond',Georgia,serif !important}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(18px,-14px) scale(1.06)}100%{transform:translate(0,0) scale(1)}}
+.orb{animation:drift 14s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.orb{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #FDF8F5; font-family: Montserrat, -apple-system, system-ui, sans-serif; color: #1E1412; -webkit-font-smoothing: antialiased">
+<div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden; pointer-events: none">
+<div class="orb" style="position: absolute; width: 360px; height: 360px; left: -120px; top: -80px; border-radius: 50%; background: #F1BAB3; filter: blur(70px); opacity: 0.85"></div>
+<div class="orb" style="position: absolute; width: 300px; height: 300px; right: -140px; top: 260px; border-radius: 50%; background: #D75C61; filter: blur(80px); opacity: 0.35; animation-delay: -5s"></div>
+<div class="orb" style="position: absolute; width: 320px; height: 320px; left: -100px; bottom: -60px; border-radius: 50%; background: #81A357; filter: blur(90px); opacity: 0.28; animation-delay: -9s"></div>
+<div style="position: absolute; width: 260px; height: 260px; right: -60px; bottom: 120px; border-radius: 50%; background: #E8E3D8; filter: blur(60px); opacity: 0.9"></div>
+</div>
+
+<div class="sc" onScroll="{{onScroll}}" style="position: absolute; top: 0; left: 0; right: 0; bottom: 83px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; padding-bottom: 40px; box-sizing: border-box">
+<div style="position: relative; flex-shrink: 0; height: 640px; background: linear-gradient(160deg, #FDF8F5 0%, #F1BAB3 45%, #D75C61 100%); overflow: hidden">
+<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 40px; text-align: center; font-size: 15px; line-height: 21px; color: rgba(42,18,17,0.55); font-family: ui-monospace, Menlo, monospace">[HERO IMAGE]<br>Higs AI · Soul Cinema<br>evolves as you scroll (later)</div>
+<a href="Me.dc.html" aria-label="Me" style="position: absolute; top: 54px; right: 16px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.85); display: flex; align-items: center; justify-content: center; color: #6B5450; font-size: 15px; font-weight: 600">N</a>
+<div style="position: absolute; top: 56px; left: 20px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 17px; font-weight: 700; color: #111">VEU Curates</span><nav aria-label="You are here" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: #3A3836; "><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="#932D28" stroke-width="1.6" aria-hidden="true"><path d="M6 13s4.5-4.2 4.5-7.5a4.5 4.5 0 0 0-9 0C1.5 8.8 6 13 6 13z"/><circle cx="6" cy="5.5" r="1.6"/></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">You are here:</span><span aria-current="page" style="color: #111; font-weight: 600">Home</span></nav></div>
+<div style="position: absolute; left: 20px; right: 20px; bottom: 36px; display: flex; flex-direction: column; gap: 14px">
+<p class="serif" style="margin: 0; font-size: 46px; line-height: 48px; font-weight: 600; color: #fff; letter-spacing: 0">colour is science. wearing it well is art.</p>
+<span style="font-size: 14px; color: #fff; display: flex; align-items: center; gap: 6px">Scroll to get started <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4.5 6 8.5l4-4"/></svg></span>
+</div>
+</div>
+<div class="rv" style="padding: 12px 20px 4px; display: flex; flex-direction: column; gap: 6px; {{st0}}">
+<h2 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 700">How to get started</h2>
+<p style="margin: 0; font-size: 17px; line-height: 23px; color: #6B5450">Five steps to the shades that work on you.</p>
+</div>
+<section class="rv" style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 20px; padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; {{st1}}">
+<span style="font-size: 13px; font-weight: 600; color: #6B5450; font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px">STEP 01</span>
+<h3 style="margin: 0; font-size: 24px; line-height: 29px; font-weight: 700">Tell us your undertone</h3>
+<p style="margin: 0; font-size: 17px; line-height: 23px; color: #6B5450">Do you lean warm, cool or neutral? Go with your gut. You can change it any time.</p>
+<div style="background: rgba(255,255,255,0.45); border-radius: 14px; padding: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><span style="height: 32px; padding: 0 14px; border-radius: 16px; display: inline-flex; align-items: center; font-size: 15px; font-weight: 500; background: #932D28; color: #fff">Warm</span><span style="height: 32px; padding: 0 14px; border-radius: 16px; display: inline-flex; align-items: center; font-size: 15px; font-weight: 500; background: rgba(253,248,245,0.82); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: #000">Cool</span><span style="height: 32px; padding: 0 14px; border-radius: 16px; display: inline-flex; align-items: center; font-size: 15px; font-weight: 500; background: rgba(253,248,245,0.82); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: #000">Neutral</span><span style="height: 32px; padding: 0 14px; border-radius: 16px; display: inline-flex; align-items: center; font-size: 15px; font-weight: 500; background: rgba(253,248,245,0.82); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: #000">Not sure</span></div>
+</section>
+<section class="rv" style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 20px; padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; {{st2}}">
+<span style="font-size: 13px; font-weight: 600; color: #6B5450; font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px">STEP 02</span>
+<h3 style="margin: 0; font-size: 24px; line-height: 29px; font-weight: 700">Pick the looks you like</h3>
+<p style="margin: 0; font-size: 17px; line-height: 23px; color: #6B5450">Natural, everyday or bold. We match shades to the look you actually wear.</p>
+<div style="background: rgba(255,255,255,0.45); border-radius: 14px; padding: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><span style="height: 32px; padding: 0 14px; border-radius: 16px; display: inline-flex; align-items: center; font-size: 15px; font-weight: 500; background: rgba(253,248,245,0.82); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: #000">Natural</span><span style="height: 32px; padding: 0 14px; border-radius: 16px; display: inline-flex; align-items: center; font-size: 15px; font-weight: 500; background: #932D28; color: #fff">Everyday</span><span style="height: 32px; padding: 0 14px; border-radius: 16px; display: inline-flex; align-items: center; font-size: 15px; font-weight: 500; background: rgba(253,248,245,0.82); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: #000">Bold</span></div>
+</section>
+<section class="rv" style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 20px; padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; {{st3}}">
+<span style="font-size: 13px; font-weight: 600; color: #6B5450; font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px">STEP 03</span>
+<h3 style="margin: 0; font-size: 24px; line-height: 29px; font-weight: 700">Match your skin and lips</h3>
+<p style="margin: 0; font-size: 17px; line-height: 23px; color: #6B5450">Slide until the face in Studio looks like you, so every shade shows as it would on you.</p>
+<div style="background: rgba(255,255,255,0.45); border-radius: 14px; padding: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><div style="width: 100%; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; gap: 10px"><span style="font-size: 15px; width: 40px">Skin</span><span style="display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: #D9A583; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); flex-shrink: 0"></span><span style="flex: 1; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #F6DCC8, #EBC3A6, #D9A583, #B67E5A, #8A5A3C, #5E3C28)"></span></div>
+<div style="display: flex; align-items: center; gap: 10px"><span style="font-size: 15px; width: 40px">Lips</span><span style="display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: #C27E74; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); flex-shrink: 0"></span><span style="flex: 1; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #EBC2BC, #D9978F, #BF6F66, #94504A, #6A3631)"></span></div></div></div>
+</section>
+<section class="rv" style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 20px; padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; {{st4}}">
+<span style="font-size: 13px; font-weight: 600; color: #6B5450; font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px">STEP 04</span>
+<h3 style="margin: 0; font-size: 24px; line-height: 29px; font-weight: 700">Explore products to try</h3>
+<p style="margin: 0; font-size: 17px; line-height: 23px; color: #6B5450">Lips, blush and eyes, shown as they would look on you, not in the pan.</p>
+<div style="background: rgba(255,255,255,0.45); border-radius: 14px; padding: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><span style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 70px"><span style="display: inline-block; width: 44px; height: 44px; border-radius: 50%; background: #D67268; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); flex-shrink: 0"></span><span style="font-size: 11px; text-align: center; line-height: 13px">Lip tint</span></span><span style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 70px"><span style="display: inline-block; width: 44px; height: 44px; border-radius: 50%; background: #E79075; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); flex-shrink: 0"></span><span style="font-size: 11px; text-align: center; line-height: 13px">Blush</span></span><span style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 70px"><span style="display: inline-block; width: 44px; height: 44px; border-radius: 50%; background: #D89D81; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); flex-shrink: 0"></span><span style="font-size: 11px; text-align: center; line-height: 13px">Eyeshadow</span></span><span style="display: flex; flex-direction: column; align-items: center; gap: 6px; width: 70px"><span style="display: inline-block; width: 44px; height: 44px; border-radius: 50%; background: #D24E3B; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); flex-shrink: 0"></span><span style="font-size: 11px; text-align: center; line-height: 13px">Lipstick</span></span></div>
+</section>
+<section class="rv" style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 20px; padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; {{st5}}">
+<span style="font-size: 13px; font-weight: 600; color: #6B5450; font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px">STEP 05</span>
+<h3 style="margin: 0; font-size: 24px; line-height: 29px; font-weight: 700">See the colour science</h3>
+<p style="margin: 0; font-size: 17px; line-height: 23px; color: #6B5450">Every shade gets a fit score based on lightness, chroma and undertone, with a plain-English reason.</p>
+<div style="background: rgba(255,255,255,0.45); border-radius: 14px; padding: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><div style="width: 100%; display: flex; align-items: center; gap: 12px"><span style="display: inline-block; width: 40px; height: 40px; border-radius: 50%; background: #D67268; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); flex-shrink: 0"></span><div style="flex: 1; display: flex; flex-direction: column; gap: 2px; font-family: ui-monospace, Menlo, monospace"><span style="font-size: 15px; font-weight: 600">Strong match · 88</span><span style="font-size: 13px; color: #6B5450">L 59  C 45  h 31°  ΔE 13</span></div></div></div><a href="Learn.dc.html" style="align-self: flex-start; height: 40px; padding: 0 16px; border-radius: 20px; background: rgba(241,186,179,0.55); color: #932D28; font-size: 15px; font-weight: 600; display: inline-flex; align-items: center">Learn more about colour science</a>
+</section>
+<div class="rv" style="padding: 24px 24px 8px; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; {{st6}}">
+<p class="serif" style="margin: 0; font-size: 32px; line-height: 36px; font-weight: 600; color: #932D28">who says science isn't fun? happy exploring, you're the next work of art.</p>
+<div style="width: 100%"><a href="Quiz.dc.html" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 26px; background: #932D28; color: #fff; font-size: 17px; font-weight: 600; border: 0; width: 100%">Get started</a></div>
+</div>
+</div>
+<nav aria-label="Tabs" style="position: absolute; left: 14px; right: 14px; bottom: 16px; height: 64px; box-sizing: border-box; padding-top: 8px; background: rgba(255,255,255,0.58); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.85); border-radius: 32px; box-shadow: 0 10px 30px rgba(147,45,40,0.14); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr))"><a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; color: #932D28; font-size: 11px; font-weight: 500"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#932D28" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="Learn.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; color: #6B5450; font-size: 11px; font-weight: 500"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B5450" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5C6.5 4.5 9.5 4.5 12 6c2.5-1.5 5.5-1.5 8-.5V19c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5z"/><path d="M12 6v13.5"/></svg><span>Learn</span></a><a href="Studio.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; color: #6B5450; font-size: 11px; font-weight: 500"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B5450" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5c3 4 6 7.2 6 10.5a6 6 0 0 1-12 0c0-3.3 3-6.5 6-10.5z"/></svg><span>Studio</span></a><a href="Explore.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; color: #6B5450; font-size: 11px; font-weight: 500"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B5450" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span>Explore</span></a><a href="Me.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 48px; color: #6B5450; font-size: 11px; font-weight: 500"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B5450" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/></svg><span>Me</span></a></nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 390, "height": 844}}'>
+class Component extends DCLogic {
+state = { top: 0, max: 99999 };
+renderVals() {
+const s = this.state, view = 761;
+const pos = [620, 720, 1040, 1360, 1680, 2000, 2300];
+const atEnd = s.top >= s.max - 60;
+const st = i => (atEnd || s.top + view * 0.85 > pos[i]) ? 'opacity: 1; transform: translateY(0px)' : 'opacity: 0; transform: translateY(32px)';
+return {
+onScroll: e => { const el = e.currentTarget || e.target; this.setState({ top: el.scrollTop, max: el.scrollHeight - el.clientHeight }); },
+st0: st(0), st1: st(1), st2: st(2), st3: st(3), st4: st(4), st5: st(5), st6: st(6)
+};
+}
+}
+</script>
+</body>
+</html>

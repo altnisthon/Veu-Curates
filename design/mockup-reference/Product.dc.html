@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Product detail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&amp;family=Montserrat:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#932D28;text-decoration:none}a:hover{color:#6E1F1B}
+input,button{font:inherit}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif !important;font-weight:600 !important;letter-spacing:0 !important}
+h1{font-size:40px !important;line-height:44px !important}
+.serif{font-family:'Cormorant Garamond',Georgia,serif !important}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(18px,-14px) scale(1.06)}100%{transform:translate(0,0) scale(1)}}
+.orb{animation:drift 14s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.orb{animation:none}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #FDF8F5; font-family: Montserrat, -apple-system, system-ui, sans-serif; color: #1E1412; -webkit-font-smoothing: antialiased">
+<div aria-hidden="true" style="position: absolute; inset: 0; overflow: hidden; pointer-events: none">
+<div class="orb" style="position: absolute; width: 360px; height: 360px; left: -120px; top: -80px; border-radius: 50%; background: #F1BAB3; filter: blur(70px); opacity: 0.85"></div>
+<div class="orb" style="position: absolute; width: 300px; height: 300px; right: -140px; top: 260px; border-radius: 50%; background: #D75C61; filter: blur(80px); opacity: 0.35; animation-delay: -5s"></div>
+<div class="orb" style="position: absolute; width: 320px; height: 320px; left: -100px; bottom: -60px; border-radius: 50%; background: #81A357; filter: blur(90px); opacity: 0.28; animation-delay: -9s"></div>
+<div style="position: absolute; width: 260px; height: 260px; right: -60px; bottom: 120px; border-radius: 50%; background: #E8E3D8; filter: blur(60px); opacity: 0.9"></div>
+</div>
+
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; padding: 54px 0 120px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+<div style="height: 44px; padding: 0 8px; display: flex; align-items: center"><a href="Explore.dc.html" style="display: flex; align-items: center; gap: 6px; font-size: 17px; min-height: 44px"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#932D28" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2 2 10l8 8"/></svg><span>Explore</span></a></div>
+<nav aria-label="You are here" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: #6B5450; padding: 0 20px; margin: -16px 0 -8px"><svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="#932D28" stroke-width="1.6" aria-hidden="true"><path d="M6 13s4.5-4.2 4.5-7.5a4.5 4.5 0 0 0-9 0C1.5 8.8 6 13 6 13z"/><circle cx="6" cy="5.5" r="1.6"/></svg><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">You are here:</span><a href="Main.dc.html" style="color: #6B5450; min-height: 28px; display: inline-flex; align-items: center">Home</a><span aria-hidden="true" style="color: #6B5450">›</span><a href="Explore.dc.html" style="color: #6B5450; min-height: 28px; display: inline-flex; align-items: center">Explore</a><span aria-hidden="true" style="color: #6B5450">›</span><span aria-current="page" style="color: #000; font-weight: 600">Juicy Lasting Tint</span></nav>
+<div style="padding: 0 20px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; color: #6B5450">Romand</span>
+<h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 700">Juicy Lasting Tint</h1>
+<span style="font-size: 17px">04 Coral Sunrise</span>
+</div>
+<div style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 16px; padding: 20px 12px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px"><div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><span style="display: inline-block; width: 72px; height: 72px; border-radius: 50%; background: #E5584A; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); flex-shrink: 0"></span><span style="font-size: 13px; font-weight: 600">In the pan</span><span style="font-size: 13px; color: #6B5450; text-align: center; line-height: 16px">Packaging</span></div><div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><span style="display: inline-block; width: 72px; height: 72px; border-radius: 50%; background: #EA7A6C; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); flex-shrink: 0"></span><span style="font-size: 13px; font-weight: 600">Real swatch</span><span style="font-size: 13px; color: #6B5450; text-align: center; line-height: 16px">From swatches</span></div><div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><span style="display: inline-block; width: 72px; height: 72px; border-radius: 50%; background: #D67268; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.12); flex-shrink: 0"></span><span style="font-size: 13px; font-weight: 600">On you</span><span style="font-size: 13px; color: #6B5450; text-align: center; line-height: 16px">Your lip colour</span></div></div>
+<div style="margin: -8px 16px 0; display: flex; gap: 8px; flex-wrap: wrap"><span style="font-size: 13px; font-weight: 600; color: #154327; background: rgba(129,163,87,0.22); padding: 3px 8px; border-radius: 6px">Strong match · 88</span><span style="font-size: 13px; font-weight: 600; color: #7A2420; background: rgba(241,186,179,0.6); padding: 3px 8px; border-radius: 6px">Medium confidence · 3 swatches</span></div>
+<p style="margin: -6px 20px 0; font-size: 15px; line-height: 21px; color: #6B5450">Swatches lighter and softer than it looks in the bottle. Example data.</p>
+<div><h2 style="margin: 0 0 8px; padding: 0 20px; font-size: 20px; line-height: 25px; font-weight: 700">Details</h2><div style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 18px; overflow: hidden"><div style="margin-left: 16px; padding: 11px 16px 11px 0; border-bottom: 0.5px solid rgba(147,45,40,0.14); display: flex; align-items: center; gap: 12px; min-height: 22px"><span style="font-size: 17px; flex: 1">Finish</span><span style="font-size: 17px; color: #6B5450">Sheer tint</span></div><div style="margin-left: 16px; padding: 11px 16px 11px 0; border-bottom: 0.5px solid rgba(147,45,40,0.14); display: flex; align-items: center; gap: 12px; min-height: 22px"><span style="font-size: 17px; flex: 1">Price</span><span style="font-size: 17px; color: #6B5450">SGD 15–22</span></div><div style="margin-left: 16px; padding: 11px 16px 11px 0;  display: flex; align-items: center; gap: 12px; min-height: 22px"><span style="font-size: 17px; flex: 1">Where to buy</span><span style="font-size: 17px; color: #6B5450">[WHERE TO BUY SG]</span></div></div></div>
+<div><h2 style="margin: 0 0 8px; padding: 0 20px; font-size: 20px; line-height: 25px; font-weight: 700">Swatch sources</h2><div style="margin: 0 16px; background: rgba(255,255,255,0.52); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 10px 30px rgba(147,45,40,0.08); border-radius: 18px; overflow: hidden"><div style="margin-left: 16px; padding: 11px 16px 11px 0; border-bottom: 0.5px solid rgba(147,45,40,0.14); display: flex; align-items: center; gap: 12px; min-height: 22px"><span style="font-size: 17px; flex: 1">Creator swatch 1</span><span style="font-size: 15px; color: #6B5450">[SOURCE]</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#932D28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></div><div style="margin-left: 16px; padding: 11px 16px 11px 0; border-bottom: 0.5px solid rgba(147,45,40,0.14); display: flex; align-items: center; gap: 12px; min-height: 22px"><span style="font-size: 17px; flex: 1">Creator swatch 2</span><span style="font-size: 15px; color: #6B5450">[SOURCE]</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#932D28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></div><div style="margin-left: 16px; padding: 11px 16px 11px 0;  display: flex; align-items: center; gap: 12px; min-height: 22px"><span style="font-size: 17px; flex: 1">Creator swatch 3</span><span style="font-size: 15px; color: #6B5450">[SOURCE]</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#932D28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></div></div></div>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 34px; background: rgba(255,255,255,0.55); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-top: 1px solid rgba(255,255,255,0.8); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px"><a href="Studio.dc.html" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 26px; background: rgba(241,186,179,0.55); color: #932D28; font-size: 17px; font-weight: 600; border: 0; width: 100%">Open in Studio</a><a href="Product.dc.html" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 26px; background: #932D28; color: #fff; font-size: 17px; font-weight: 600; border: 0; width: 100%">Buy</a></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 390, "height": 844}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
