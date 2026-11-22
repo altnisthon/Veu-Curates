@@ -206,15 +206,23 @@
 /* the halo drifts the opposite way to her turn, so she reads as floating in front of it */
 .cu-stage__halo { position: absolute; left: 50%; top: 44%; width: 92%; aspect-ratio: 1; transform: translate(calc(-50% + var(--halo, 0px)), -50%); transition: transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1); border-radius: 50%; pointer-events: none;
   background: radial-gradient(closest-side, rgba(241, 186, 179, 0.75), rgba(241, 186, 179, 0.28) 55%, rgba(241, 186, 179, 0) 100%); }
-.cu-stage__float { position: absolute; inset: 0; animation: cu-bob 6s ease-in-out infinite; }
-@keyframes cu-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.cu-stage__float { position: absolute; inset: 0; }
 .cu-stage__tilt { position: absolute; inset: 0; transform: perspective(560px) translateX(var(--shift, 0px)) rotateY(var(--turn, 0deg)) rotateX(calc(var(--turn, 0deg) * -0.08)); transition: transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1); will-change: transform; }
 .cu-stage.is-dragging .cu-stage__tilt, .cu-stage.is-dragging .cu-stage__halo { transition: transform 60ms linear; }
-.cu-stage__scenes { position: absolute; inset: 0; }
-.cu-scene { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
-.cu-scene--portrait { transform: scale(1.18); }
-.cu-scene--close { transform: scale(0.85); }
-.cu-scene.is-on { opacity: 1; transform: none; }
+/* The mask keeps the zoom inside the stage. Full face: the oval is far bigger than the stage, so nothing shows.
+   Zoomed: it tightens into the same soft oval window as the close-ups, in step with the camera move. */
+.cu-stage__scenes { position: absolute; inset: 0;
+  -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); mask-image: radial-gradient(closest-side, #000 74%, transparent 100%);
+  -webkit-mask-position: center; mask-position: center; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: 260% 260%; mask-size: 260% 260%; transition: -webkit-mask-size 650ms cubic-bezier(0.65, 0, 0.35, 1), mask-size 650ms cubic-bezier(0.65, 0, 0.35, 1); }
+.cu-stage.is-zoomed .cu-stage__scenes { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+/* Full face: the camera transform comes inline from FaceStage (origin top left), and eases like a lens move.
+   Close-ups grow into place as they fade in, so the zoom keeps going after the photo switch. */
+.cu-scene { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 320ms ease; }
+.cu-scene--portrait { transform-origin: 0 0; transition: transform 650ms cubic-bezier(0.65, 0, 0.35, 1), opacity 320ms ease; }
+.cu-scene--close { transform: scale(0.72); transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1), opacity 380ms ease; }
+.cu-scene.is-on { opacity: 1; }
+.cu-scene--close.is-on { transform: none; }
 .cu-scene__frame { position: absolute; isolation: isolate; }
 /* full face: her cut-out head fills the height. close-ups: a soft oval window */
 .cu-scene--portrait .cu-scene__frame { top: 0; height: 100%; aspect-ratio: 600 / 804; left: 50%; transform: translateX(-50%); }
@@ -303,6 +311,7 @@
 @media (prefers-reduced-motion: reduce) {
   .cu-seg button, .cu-shadechip__tile, .cu-fit__bar span, .cu-app .cu-pill-btn { transition: none; }
   .cu-stage__float, .cu-stage__hint, .cu-shimmer__holo, .cu-shimmer__foil, .cu-shimmer__sheen { animation: none; }
+  .cu-scene, .cu-scene--portrait, .cu-scene--close, .cu-stage__scenes { transition: none; }
   .cu-stage__tilt { transition: transform 120ms linear; }
 }
 

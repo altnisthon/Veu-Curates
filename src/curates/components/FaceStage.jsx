@@ -1,9 +1,11 @@
 // The featured character, floating on the page and recoloured live.
 // Full face: her cut-out head (m_base_person.png, made with macOS Vision and faded at the shoulders).
-// Close-ups: a soft oval window. The visible photo cross-fades with a scale, like zooming in.
+// Close-ups: a soft oval window.
+// Zoom: picking an area moves a camera into that spot on the full face (pan + scale), then the sharper
+// close-up photo fades in. Switching areas pans across her face; Full face zooms back out.
 // Drag sideways (or use the arrow keys) to swivel her in 3D; she eases back to centre on release.
 // Each area is two masked layers from recolour.js (lightness, then colour) over the photo.
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { SCENES, SCENE_FOR_AREA, maskFile, sceneLayers } from '../../lib/recolour';
 import sampledColours from '../../../public/character/sampled-colours.json';
 
@@ -11,6 +13,25 @@ const BASE = '/character/';
 const AREA_LABEL = { lips: 'Lips', cheeks: 'Cheeks', eyes: 'Eyes' };
 const MAX_TURN = 20; // degrees either way
 const KEY_STEP = 8;
+const ZOOM_MS = 650; // camera move before the close-up photo fades in (matches the CSS transition)
+
+// Where each close-up photo sits on the full-face photo (fractions of that photo), and how far to zoom.
+// Measured from the area masks and the close-ups: cheek and eye close-ups are of her right side as you look.
+const FOCUS = {
+  lips: { x: 0.484, y: 0.58, scale: 3.2 },
+  cheeks: { x: 0.63, y: 0.48, scale: 3.0 },
+  eyes: { x: 0.61, y: 0.345, scale: 3.2 },
+};
+const PORTRAIT_ASPECT = SCENES.base.w / SCENES.base.h;
+
+// Camera transform for the full-face scene (origin top left): scale, then move the focus point to the centre.
+const cameraFor = (area, size) => {
+  if (!area || !size.w) return 'translate(0px, 0px) scale(1)';
+  const f = FOCUS[area];
+  const fw = size.h * PORTRAIT_ASPECT, left = (size.w - fw) / 2; // the photo fills the height, centred
+  const px = left + f.x * fw, py = f.y * size.h;
+  return `translate(${size.w / 2 - px * f.scale}px, ${size.h / 2 - py * f.scale}px) scale(${f.scale})`;
+};
 
 const maskUrl = (url) => ({
   WebkitMaskImage: url, maskImage: url,
@@ -20,12 +41,13 @@ const maskUrl = (url) => ({
 const areaMask = (scene, area) => maskUrl(`url(${BASE}masks/${maskFile(scene, area)})`);
 const PERSON_MASK = maskUrl(`url(${BASE}masks/m_base_person.png)`);
 
-function Scene({ id, visible, current, defaults }) {
+function Scene({ id, visible, current, defaults, camera }) {
   const s = SCENES[id];
   const layers = sceneLayers(sampledColours[id], current, defaults);
   const portrait = id === 'base';
   return (
-    <div className={`scene cu-scene cu-scene--${portrait ? 'portrait' : 'close'}${visible ? ' is-on' : ''}`} aria-hidden="true">
+    <div className={`cu-scene cu-scene--${portrait ? 'portrait' : 'close'}${visible ? ' is-on' : ''}`} aria-hidden="true"
+      style={portrait ? { transform: camera } : undefined}>
       <div className="cu-scene__frame" style={portrait ? PERSON_MASK : undefined}>
         <img src={`${BASE}${s.img}`} alt="" width={s.w} height={s.h} draggable="false" />
         {s.areas.filter((a) => layers[a]).map((a) => (
@@ -45,13 +67,36 @@ const clamp = (v) => Math.max(-MAX_TURN, Math.min(MAX_TURN, v));
 
 // current / defaults: colour per area { skin, lips, cheeks, eyes }. chip: { hex, text } shown bottom left.
 export default function FaceStage({ area, zoomed, onToggleZoom, current, defaults, label, chip }) {
-  const visible = zoomed ? SCENE_FOR_AREA[area] : 'base';
   const where = zoomed ? `a close-up of the ${AREA_LABEL[area].toLowerCase()}` : 'the full face';
   const [turn, setTurn] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [hinted, setHinted] = useState(false);
   const drag = useRef(null);
   const back = useRef(null);
+  const scenesRef = useRef(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  const [moving, setMoving] = useState(false);
+
+  useLayoutEffect(() => {
+    const el = scenesRef.current;
+    if (!el) return undefined;
+    const measure = () => setSize({ w: el.offsetWidth, h: el.offsetHeight });
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // While the camera travels (zooming in, or panning between areas) show the full face; then the close-up.
+  useEffect(() => {
+    const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (!zoomed || still) { setMoving(false); return undefined; }
+    setMoving(true);
+    const t = setTimeout(() => setMoving(false), ZOOM_MS);
+    return () => clearTimeout(t);
+  }, [zoomed, area]);
+  const visible = zoomed && !moving ? SCENE_FOR_AREA[area] : 'base';
+  const camera = cameraFor(zoomed ? area : null, size);
 
   // Ease back to centre a moment after the last keyboard turn.
   const settleSoon = () => { clearTimeout(back.current); back.current = setTimeout(() => setTurn(0), 1600); };
@@ -88,14 +133,14 @@ export default function FaceStage({ area, zoomed, onToggleZoom, current, default
   };
 
   return (
-    <div className={`cu-stage${dragging ? ' is-dragging' : ''}`} style={{ '--turn': `${turn}deg`, '--shift': `${turn * 0.6}px`, '--halo': `${-turn * 0.8}px`, '--sheen': `${50 - turn * 2.2}%` }}
+    <div className={`cu-stage${dragging ? ' is-dragging' : ''}${zoomed ? ' is-zoomed' : ''}`} style={{ '--turn': `${turn}deg`, '--shift': `${turn * 0.6}px`, '--halo': `${-turn * 0.8}px`, '--sheen': `${50 - turn * 2.2}%` }}
       tabIndex={0} aria-label={`Face preview. Use the left and right arrow keys to turn her head.`}
       onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag} onKeyDown={onKeyDown}>
       <div className="cu-stage__halo" aria-hidden="true" />
       <div className="cu-stage__float">
         <div className="cu-stage__tilt">
-          <div className="cu-stage__scenes" role="img" aria-label={`Model showing ${where}. ${label}`}>
-            {Object.keys(SCENES).map((id) => <Scene key={id} id={id} visible={id === visible} current={current} defaults={defaults} />)}
+          <div ref={scenesRef} className="cu-stage__scenes" role="img" aria-label={`Model showing ${where}. ${label}`}>
+            {Object.keys(SCENES).map((id) => <Scene key={id} id={id} visible={id === visible} current={current} defaults={defaults} camera={camera} />)}
           </div>
         </div>
       </div>
