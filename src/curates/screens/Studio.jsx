@@ -16,7 +16,6 @@ const AREAS = [
   { id: 'cheeks', label: 'Cheeks', product: 'blush' },
   { id: 'eyes', label: 'Eyes', product: 'eyeshadow' },
 ];
-const AREA_IDS = AREAS.map((a) => a.id);
 
 // Slider defaults equal the featured character's own photographed tones.
 const DEFAULT_T = { skin: 40, lips: 50 };
@@ -152,11 +151,15 @@ export default function Studio() {
       <ScreenHeader trail={[{ label: 'Studio', to: '/studio' }]} />
       <div className="cu-studio">
         <div className="cu-pad-x">
-          <h1>Shade Studio</h1>
+          <h1 className="cu-studio-title">Shade <em>Studio</em></h1>
         </div>
 
         <div className="cu-pad-x">
-          <Segmented label="Show lips, cheeks or eyes" options={AREAS.map((a) => a.label)} value={AREA_IDS.indexOf(area)} onChange={(i) => pickArea(AREA_IDS[i])} />
+          <div className="cu-pills" role="group" aria-label="Show lips, cheeks or eyes">
+            {AREAS.map((a) => (
+              <button key={a.id} type="button" className={`cu-pill-btn${area === a.id ? ' is-on' : ''}`} aria-pressed={area === a.id} onClick={() => pickArea(a.id)}>{a.label}</button>
+            ))}
+          </div>
         </div>
 
         <div className="cu-pad-x">

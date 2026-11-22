@@ -178,30 +178,53 @@
 .cu-seg button::before { content: ''; position: absolute; inset: -4px 0; } /* 44px hit area */
 .cu-seg button.is-on { background: #fff; color: var(--veu-crimson); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 
-/* the face stage */
-.cu-stage { position: relative; aspect-ratio: 6 / 7; max-height: 68vh; width: 100%; margin: 0 auto; border-radius: 20px; overflow: hidden; background: #2A1412; box-shadow: 0 16px 40px rgba(147, 45, 40, 0.25); }
-.cu-stage__glow { position: absolute; inset: 0; background: radial-gradient(65% 55% at 50% 36%, rgba(241, 186, 179, 0.42), rgba(215, 92, 97, 0.12) 55%, rgba(42, 20, 18, 0) 80%); }
-.cu-stage__scenes { position: absolute; inset: 0; overflow: hidden; }
+/* the face stage: she floats on the page, no card */
+.cu-stage { position: relative; aspect-ratio: 6 / 7; max-height: 64vh; width: 100%; margin: 0 auto; outline: none; touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: grab; }
+.cu-stage.is-dragging { cursor: grabbing; }
+.cu-stage:focus-visible { outline: 2px solid var(--veu-crimson); outline-offset: 4px; border-radius: 24px; }
+/* the halo drifts the opposite way to her turn, so she reads as floating in front of it */
+.cu-stage__halo { position: absolute; left: 50%; top: 44%; width: 92%; aspect-ratio: 1; transform: translate(calc(-50% + var(--halo, 0px)), -50%); transition: transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1); border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(241, 186, 179, 0.75), rgba(241, 186, 179, 0.28) 55%, rgba(241, 186, 179, 0) 100%); }
+.cu-stage__halo::after { content: ''; position: absolute; inset: 6%; border-radius: 50%; border: 1px solid rgba(147, 45, 40, 0.12); }
+.cu-stage__float { position: absolute; inset: 0; animation: cu-bob 6s ease-in-out infinite; }
+@keyframes cu-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.cu-stage__tilt { position: absolute; inset: 0; transform: perspective(560px) translateX(var(--shift, 0px)) rotateY(var(--turn, 0deg)) rotateX(calc(var(--turn, 0deg) * -0.08)); transition: transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1); will-change: transform; }
+.cu-stage.is-dragging .cu-stage__tilt, .cu-stage.is-dragging .cu-stage__halo { transition: transform 60ms linear; }
+.cu-stage__scenes { position: absolute; inset: 0; }
 .cu-scene { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
-.cu-scene--portrait { transform: scale(1.25); }
+.cu-scene--portrait { transform: scale(1.18); }
 .cu-scene--close { transform: scale(0.85); }
 .cu-scene.is-on { opacity: 1; transform: none; }
 .cu-scene__frame { position: absolute; isolation: isolate; }
-/* full face: fill the width, centre vertically. close-ups: fill the height, centre horizontally */
-.cu-scene--portrait .cu-scene__frame { left: 0; width: 100%; aspect-ratio: 600 / 804; top: 50%; transform: translateY(-50%); }
-.cu-scene--close .cu-scene__frame { top: 0; height: 100%; aspect-ratio: 800 / 597; left: 50%; transform: translateX(-50%); }
+/* full face: her cut-out head fills the height. close-ups: a soft oval window */
+.cu-scene--portrait .cu-scene__frame { top: 0; height: 100%; aspect-ratio: 600 / 804; left: 50%; transform: translateX(-50%); }
+.cu-scene--close { -webkit-mask-image: radial-gradient(ellipse 48% 46% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 48% 46% at 50% 50%, #000 62%, transparent 100%); }
+.cu-scene--close .cu-scene__frame { top: 4%; height: 92%; aspect-ratio: 800 / 597; left: 50%; transform: translateX(-50%); }
 .cu-scene__frame img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; }
 .cu-scene__layer { position: absolute; inset: 0; }
-.cu-stage__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(rgba(30, 12, 10, 0.38), rgba(30, 12, 10, 0) 20%, rgba(30, 12, 10, 0) 72%, rgba(30, 12, 10, 0.5)); }
-.cu-stage__top { position: absolute; top: 6px; left: 12px; right: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.cu-stage__tag { font: 600 11px/1 ui-monospace, Menlo, monospace; letter-spacing: 1.2px; color: rgba(255, 255, 255, 0.8); }
-/* 44px tall hit area with a 32px visible pill drawn behind the label */
-.cu-app .cu-stage__btn { position: relative; z-index: 0; min-height: var(--tap); padding: 0 14px; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; color: #fff; font-size: 13px; font-weight: 600; }
-.cu-stage__btn::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 32px; transform: translateY(-50%); border-radius: 16px; background: rgba(255, 255, 255, 0.14); border: 0.5px solid rgba(255, 255, 255, 0.25); z-index: -1; }
-.cu-stage__bottom { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; align-items: flex-end; }
-.cu-stage__chip { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px; border-radius: 14px; background: rgba(255, 255, 255, 0.14); border: 0.5px solid rgba(255, 255, 255, 0.25); color: #fff; }
-.cu-stage__dot { width: 26px; height: 26px; border-radius: 50%; box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.6); }
+.cu-scene__sheen { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: soft-light; opacity: 0.55;
+  background: linear-gradient(105deg, rgba(255, 255, 255, 0) calc(var(--sheen, 50%) - 22%), rgba(255, 255, 255, 0.7) var(--sheen, 50%), rgba(255, 255, 255, 0) calc(var(--sheen, 50%) + 22%)); }
+.cu-stage__top { position: absolute; top: 0; left: 4px; right: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; pointer-events: none; }
+.cu-stage__top > * { pointer-events: auto; }
+.cu-stage__tag { font: 600 11px/1 ui-monospace, Menlo, monospace; letter-spacing: 1.2px; color: var(--text-secondary); }
+/* 44px tall hit area with a 32px visible glass pill */
+.cu-app .cu-stage__btn { position: relative; z-index: 0; min-height: var(--tap); padding: 0 14px; border: 0; background: none; cursor: pointer; display: inline-flex; align-items: center; color: var(--veu-crimson); font-size: 13px; font-weight: 600; }
+.cu-stage__btn::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 32px; transform: translateY(-50%); border-radius: 16px; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 4px 14px rgba(147, 45, 40, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: -1; }
+.cu-stage__bottom { position: absolute; left: 4px; right: 4px; bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; pointer-events: none; }
+.cu-stage__chip { display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; border-radius: 20px; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 4px 14px rgba(147, 45, 40, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--text); }
+.cu-stage__dot { width: 24px; height: 24px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08); }
 .cu-stage__hex { font: 600 13px ui-monospace, Menlo, monospace; }
+.cu-stage__hint { font-size: 12px; font-weight: 600; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 6px; animation: cu-hint 2.4s ease-in-out infinite; }
+.cu-stage__hint::before { content: '‹ ›'; letter-spacing: 2px; color: var(--veu-crimson); }
+@keyframes cu-hint { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+
+/* title + area pills */
+.cu-studio-title { text-align: center; }
+.cu-studio-title em { font-style: italic; font-weight: 500; color: var(--veu-crimson); }
+.cu-pills { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.cu-app .cu-pill-btn { min-height: var(--tap); padding: 0 22px; border-radius: 22px; border: 1px solid rgba(147, 45, 40, 0.18); background: var(--veu-cream); color: var(--text); font-size: 15px; font-weight: 600; cursor: pointer; transition: background 160ms ease, color 160ms ease, border-color 160ms ease; }
+.cu-app .cu-pill-btn:hover { border-color: rgba(147, 45, 40, 0.4); }
+.cu-app .cu-pill-btn.is-on { background: var(--veu-crimson); border-color: var(--veu-crimson); color: #fff; }
 
 /* Your face card */
 .cu-facecard { overflow: hidden; }
@@ -258,7 +281,9 @@
 .cu-sci__note { font-size: 13px; line-height: 18px; color: var(--text-secondary); }
 
 @media (prefers-reduced-motion: reduce) {
-  .cu-seg button, .cu-shadechip__tile, .cu-fit__bar span { transition: none; }
+  .cu-seg button, .cu-shadechip__tile, .cu-fit__bar span, .cu-app .cu-pill-btn { transition: none; }
+  .cu-stage__float, .cu-stage__hint { animation: none; }
+  .cu-stage__tilt { transition: transform 120ms linear; }
 }
 
 @media (prefers-reduced-motion: reduce) {
