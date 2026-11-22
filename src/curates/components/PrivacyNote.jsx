@@ -1,23 +1,21 @@
 // Plain-English privacy note. Shown inside the sign-up sheet and on /privacy.
 // The website has no privacy page yet, so this is the app's own notice.
-// TODO(VEU): confirm the contact route for data requests and have the founder review this copy.
+// Kept short: what we keep, why, emails, and how to reach us (PDPA basics).
 
-export const PRIVACY_CONTACT = 'through the contact form on veu-alchemist.com';
+export const PRIVACY_EMAIL = 'hello@veu-alchemist.com';
 
 export default function PrivacyNote({ compact = false }) {
   const H = compact ? 'h4' : 'h2';
   return (
     <div className={`cu-privacy${compact ? ' cu-privacy--compact' : ''}`}>
       <H>What we keep</H>
-      <p>Your first name and email. Your Instagram and whether you've had a colour analysis, only if you add them. Your undertone lean and the shades you like.</p>
+      <p>Your name, email, undertone lean and the shades you like. Instagram and colour-analysis history only if you add them.</p>
       <H>Why</H>
-      <p>To save your picks so they're here next time, and to learn which shades people love so we can recommend better ones. We also note which screens and shades you tap, only to improve the app.</p>
+      <p>We want to constantly improve our app to ensure that YOU get the best recommendations, tailored to your preferences.</p>
       <H>Emails</H>
-      <p>Only if you switch on colour tips. It's off unless you turn it on, and you can turn it off any time.</p>
-      <H>What we never do</H>
-      <p>We never sell your details. We never ask for photos of you. Your season is found in person at a VEU consultation, not by the app.</p>
+      <p>Only if you switch them on. Reply &ldquo;unsubscribe&rdquo; any time to stop them.</p>
       <H>Your choice</H>
-      <p>Want to see, change or delete what we hold? Message us {PRIVACY_CONTACT} and we'll sort it out.</p>
+      <p>We never sell your details. To see, change or delete them, email us at <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>.</p>
     </div>
   );
 }
