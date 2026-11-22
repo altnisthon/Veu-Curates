@@ -1,30 +1,27 @@
 // The featured character, floating on the page and recoloured live.
 // Full face: her cut-out head (m_base_person.png, made with macOS Vision and faded at the shoulders).
-// Close-ups: a soft oval window.
-// Zoom: picking an area moves a camera into that spot on the full face (pan + scale), then the sharper
-// close-up photo fades in. Switching areas pans across her face; Full face zooms back out.
+// Zoom: picking an area moves a camera into that spot on her face (pan + scale) in one continuous move on the
+// single high-resolution photo (p_base_hd.jpg, upscaled with Higgsfield), so the detail stays the same all the
+// way in. Switching areas pans across her face; Full face zooms back out. The view softens into an oval when zoomed.
 // Drag sideways (or use the arrow keys) to swivel her in 3D; she eases back to centre on release.
 // Each area is two masked layers from recolour.js (lightness, then colour) over the photo.
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { SCENES, SCENE_FOR_AREA, maskFile, sceneLayers } from '../../lib/recolour';
+import { SCENES, maskFile, sceneLayers } from '../../lib/recolour';
 import sampledColours from '../../../public/character/sampled-colours.json';
 
 const BASE = '/character/';
 const AREA_LABEL = { lips: 'Lips', cheeks: 'Cheeks', eyes: 'Eyes' };
 const MAX_TURN = 20; // degrees either way
 const KEY_STEP = 8;
-const PAN_MS = 420; // when switching areas while zoomed, how long the camera pans across the full face
-
-// Where each close-up photo sits on the full-face photo (fractions of that photo), and how far to zoom.
-// Measured from the area masks and the close-ups: cheek and eye close-ups are of her right side as you look.
-// The full-face photo is only 600px wide, so the camera stops at about 2.3x; the sharp close-up has already
-// faded in over it by then and keeps growing into place.
+// Where the camera points on her face (fractions of the photo) and how far it zooms. Measured from the area masks.
 const FOCUS = {
-  lips: { x: 0.484, y: 0.58, scale: 2.4 },
-  cheeks: { x: 0.63, y: 0.48, scale: 2.2 },
-  eyes: { x: 0.61, y: 0.345, scale: 2.4 },
+  lips: { x: 0.484, y: 0.58, scale: 3.4 },
+  cheeks: { x: 0.63, y: 0.48, scale: 2.6 },
+  eyes: { x: 0.61, y: 0.345, scale: 3.2 },
 };
 const PORTRAIT_ASPECT = SCENES.base.w / SCENES.base.h;
+const HD_IMG = 'p_base_hd.jpg';
+const HD_W = 2400, HD_H = 3216; // same framing as p_base.jpg (600 x 804), four times the pixels
 
 // Camera transform for the full-face scene (origin top left): scale, then move the focus point to the centre.
 const cameraFor = (area, size) => {
@@ -43,15 +40,19 @@ const maskUrl = (url) => ({
 const areaMask = (scene, area) => maskUrl(`url(${BASE}masks/${maskFile(scene, area)})`);
 const PERSON_MASK = maskUrl(`url(${BASE}masks/m_base_person.png)`);
 
-function Scene({ id, visible, current, defaults, camera }) {
+// Her full face, recoloured. Masks and measured colours are the same as the 600px original (same framing).
+function Face({ current, defaults, camera }) {
+  const id = 'base';
   const s = SCENES[id];
   const layers = sceneLayers(sampledColours[id], current, defaults);
-  const portrait = id === 'base';
+  const [hdReady, setHdReady] = useState(false);
   return (
-    <div className={`cu-scene cu-scene--${portrait ? 'portrait' : 'close'}${visible ? ' is-on' : ''}`} aria-hidden="true"
-      style={portrait ? { transform: camera } : undefined}>
-      <div className="cu-scene__frame" style={portrait ? PERSON_MASK : undefined}>
+    <div className="cu-scene cu-scene--portrait is-on" aria-hidden="true" style={{ transform: camera }}>
+      <div className="cu-scene__frame" style={PERSON_MASK}>
+        {/* the small original shows at once; the sharp one (about 900 KB) fades in over it when loaded */}
         <img src={`${BASE}${s.img}`} alt="" width={s.w} height={s.h} draggable="false" />
+        <img src={`${BASE}${HD_IMG}`} alt="" width={HD_W} height={HD_H} draggable="false" decoding="async"
+          className={`cu-scene__hd${hdReady ? ' is-ready' : ''}`} onLoad={() => setHdReady(true)} />
         {s.areas.filter((a) => layers[a]).map((a) => (
           <div key={a}>
             <div className="cu-scene__layer" style={{ ...areaMask(id, a), ...layers[a].lightness }} />
@@ -77,7 +78,6 @@ export default function FaceStage({ area, zoomed, onToggleZoom, current, default
   const back = useRef(null);
   const scenesRef = useRef(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
-  const [moving, setMoving] = useState(false);
 
   useLayoutEffect(() => {
     const el = scenesRef.current;
@@ -89,19 +89,6 @@ export default function FaceStage({ area, zoomed, onToggleZoom, current, default
     return () => ro.disconnect();
   }, []);
 
-  // Zooming in and out is handled by overlapping CSS fades (see .cu-scene in curates.css).
-  // Switching areas while zoomed in: show the full face briefly so the camera visibly pans across, then the close-up.
-  const prev = useRef({ zoomed, area });
-  useEffect(() => {
-    const was = prev.current;
-    prev.current = { zoomed, area };
-    const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (!(zoomed && was.zoomed && was.area !== area) || still) { setMoving(false); return undefined; }
-    setMoving(true);
-    const t = setTimeout(() => setMoving(false), PAN_MS);
-    return () => clearTimeout(t);
-  }, [zoomed, area]);
-  const visible = zoomed && !moving ? SCENE_FOR_AREA[area] : 'base';
   const camera = cameraFor(zoomed ? area : null, size);
 
   // Ease back to centre a moment after the last keyboard turn.
@@ -147,7 +134,7 @@ export default function FaceStage({ area, zoomed, onToggleZoom, current, default
         {/* 3D only while she's turned: a 3D layer is drawn as a flat picture, which would blur the zoom */}
         <div className="cu-stage__tilt" style={{ transform: turn || dragging ? `perspective(560px) translateX(${turn * 0.6}px) rotateY(${turn}deg) rotateX(${-turn * 0.08}deg)` : 'none' }}>
           <div ref={scenesRef} className="cu-stage__scenes" role="img" aria-label={`Model showing ${where}. ${label}`}>
-            {Object.keys(SCENES).map((id) => <Scene key={id} id={id} visible={id === visible} current={current} defaults={defaults} camera={camera} />)}
+            <Face current={current} defaults={defaults} camera={camera} />
           </div>
         </div>
       </div>
