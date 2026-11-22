@@ -59,8 +59,6 @@ function Face({ current, defaults, camera }) {
             <div className="cu-scene__layer" style={{ ...areaMask(id, a), ...layers[a].colour }} />
           </div>
         ))}
-        {/* light sheen that slides as she turns, for the holographic feel */}
-        <div className="cu-scene__sheen" />
       </div>
     </div>
   );
@@ -126,7 +124,7 @@ export default function FaceStage({ area, zoomed, onToggleZoom, current, default
   };
 
   return (
-    <div className={`cu-stage${dragging ? ' is-dragging' : ''}${zoomed ? ' is-zoomed' : ''}`} style={{ '--halo': `${-turn * 0.8}px`, '--sheen': `${50 - turn * 2.2}%` }}
+    <div className={`cu-stage${dragging ? ' is-dragging' : ''}${zoomed ? ' is-zoomed' : ''}`} style={{ '--halo': `${-turn * 0.8}px` }}
       tabIndex={0} aria-label={`Face preview. Use the left and right arrow keys to turn her head.`}
       onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag} onKeyDown={onKeyDown}>
       <div className="cu-stage__halo" aria-hidden="true" />
