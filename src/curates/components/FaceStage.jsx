@@ -13,14 +13,16 @@ const BASE = '/character/';
 const AREA_LABEL = { lips: 'Lips', cheeks: 'Cheeks', eyes: 'Eyes' };
 const MAX_TURN = 20; // degrees either way
 const KEY_STEP = 8;
-const ZOOM_MS = 650; // camera move before the close-up photo fades in (matches the CSS transition)
+const PAN_MS = 420; // when switching areas while zoomed, how long the camera pans across the full face
 
 // Where each close-up photo sits on the full-face photo (fractions of that photo), and how far to zoom.
 // Measured from the area masks and the close-ups: cheek and eye close-ups are of her right side as you look.
+// The full-face photo is only 600px wide, so the camera stops at about 2.3x; the sharp close-up has already
+// faded in over it by then and keeps growing into place.
 const FOCUS = {
-  lips: { x: 0.484, y: 0.58, scale: 3.2 },
-  cheeks: { x: 0.63, y: 0.48, scale: 3.0 },
-  eyes: { x: 0.61, y: 0.345, scale: 3.2 },
+  lips: { x: 0.484, y: 0.58, scale: 2.4 },
+  cheeks: { x: 0.63, y: 0.48, scale: 2.2 },
+  eyes: { x: 0.61, y: 0.345, scale: 2.4 },
 };
 const PORTRAIT_ASPECT = SCENES.base.w / SCENES.base.h;
 
@@ -87,12 +89,16 @@ export default function FaceStage({ area, zoomed, onToggleZoom, current, default
     return () => ro.disconnect();
   }, []);
 
-  // While the camera travels (zooming in, or panning between areas) show the full face; then the close-up.
+  // Zooming in and out is handled by overlapping CSS fades (see .cu-scene in curates.css).
+  // Switching areas while zoomed in: show the full face briefly so the camera visibly pans across, then the close-up.
+  const prev = useRef({ zoomed, area });
   useEffect(() => {
+    const was = prev.current;
+    prev.current = { zoomed, area };
     const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (!zoomed || still) { setMoving(false); return undefined; }
+    if (!(zoomed && was.zoomed && was.area !== area) || still) { setMoving(false); return undefined; }
     setMoving(true);
-    const t = setTimeout(() => setMoving(false), ZOOM_MS);
+    const t = setTimeout(() => setMoving(false), PAN_MS);
     return () => clearTimeout(t);
   }, [zoomed, area]);
   const visible = zoomed && !moving ? SCENE_FOR_AREA[area] : 'base';
@@ -133,12 +139,13 @@ export default function FaceStage({ area, zoomed, onToggleZoom, current, default
   };
 
   return (
-    <div className={`cu-stage${dragging ? ' is-dragging' : ''}${zoomed ? ' is-zoomed' : ''}`} style={{ '--turn': `${turn}deg`, '--shift': `${turn * 0.6}px`, '--halo': `${-turn * 0.8}px`, '--sheen': `${50 - turn * 2.2}%` }}
+    <div className={`cu-stage${dragging ? ' is-dragging' : ''}${zoomed ? ' is-zoomed' : ''}`} style={{ '--halo': `${-turn * 0.8}px`, '--sheen': `${50 - turn * 2.2}%` }}
       tabIndex={0} aria-label={`Face preview. Use the left and right arrow keys to turn her head.`}
       onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endDrag} onPointerCancel={endDrag} onKeyDown={onKeyDown}>
       <div className="cu-stage__halo" aria-hidden="true" />
       <div className="cu-stage__float">
-        <div className="cu-stage__tilt">
+        {/* 3D only while she's turned: a 3D layer is drawn as a flat picture, which would blur the zoom */}
+        <div className="cu-stage__tilt" style={{ transform: turn || dragging ? `perspective(560px) translateX(${turn * 0.6}px) rotateY(${turn}deg) rotateX(${-turn * 0.08}deg)` : 'none' }}>
           <div ref={scenesRef} className="cu-stage__scenes" role="img" aria-label={`Model showing ${where}. ${label}`}>
             {Object.keys(SCENES).map((id) => <Scene key={id} id={id} visible={id === visible} current={current} defaults={defaults} camera={camera} />)}
           </div>
