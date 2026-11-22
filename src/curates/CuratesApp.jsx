@@ -9,6 +9,7 @@ import Home from './screens/Home';
 import Undertone from './screens/Undertone';
 import Result from './screens/Result';
 import Studio from './screens/Studio';
+import Explore from './screens/Explore';
 import { ComingSoon, Me, Privacy } from './screens/Simple';
 
 const NO_TABBAR = ['/undertone'];
@@ -31,7 +32,7 @@ function Shell() {
             <Route path="/result" element={<Result />} />
             <Route path="/learn" element={<ComingSoon tab="learn" />} />
             <Route path="/studio" element={<Studio />} />
-            <Route path="/explore" element={<ComingSoon tab="explore" />} />
+            <Route path="/explore" element={<Explore />} />
             <Route path="/me" element={<Me />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="*" element={<Navigate to="/" replace />} />

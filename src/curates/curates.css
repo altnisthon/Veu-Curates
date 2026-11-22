@@ -305,6 +305,41 @@
 .cu-fit__bar span { display: block; height: 100%; border-radius: 3px; background: var(--veu-crimson); transition: width 320ms ease; }
 .cu-fit__reason { font-size: 15px; line-height: 21px; color: var(--text); }
 
+/* product: card actions, menu sheet, rows (also used by Explore) */
+.cu-shadecard__head { align-items: center; }
+.cu-shadecard__actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 16px; flex-wrap: wrap; }
+.cu-shadecard__buttons { display: flex; flex-direction: column; gap: 4px; padding: 0 16px; }
+.cu-menu { gap: 12px; }
+.cu-menu__controls { display: flex; flex-direction: column; gap: 8px; }
+.cu-menu__row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.cu-search { display: flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 0 14px; border-radius: 12px; background: #fff; color: var(--text-secondary); }
+.cu-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 16px; color: var(--text); min-height: var(--tap); }
+.cu-search:focus-within { box-shadow: 0 0 0 2px var(--veu-crimson); }
+.cu-select select { width: 100%; min-height: var(--tap); padding: 0 12px; border-radius: 12px; border: 0; background: #fff; font: 500 15px var(--font-body); color: var(--text); }
+.cu-select select:focus-visible { outline: 2px solid var(--veu-crimson); }
+.cu-menu__list, .cu-explore__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.cu-prod { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px; border: 0; border-radius: 16px; background: #fff; cursor: pointer; text-align: left; transition: box-shadow 160ms ease; }
+.cu-prod.is-on { box-shadow: 0 0 0 2px var(--veu-crimson); }
+.cu-prod__tile { width: 52px; height: 52px; flex-shrink: 0; border-radius: 12px; background: #F6F4F1; display: flex; align-items: center; justify-content: center; }
+.cu-prod__tile--lg { width: 64px; height: 64px; border-radius: 16px; }
+.cu-prod__swatch { width: 34px; height: 34px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06); }
+.cu-prod__tile--lg .cu-prod__swatch { width: 42px; height: 42px; }
+.cu-prod__swatch--none { background: repeating-linear-gradient(135deg, #E8E3D8 0 4px, #F6F4F1 4px 8px); }
+.cu-prod__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.cu-prod__brand { font-size: 12px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text-secondary); }
+.cu-prod__name { font-size: 15px; font-weight: 600; line-height: 19px; }
+.cu-prod__shade { font-size: 14px; color: var(--text-secondary); }
+.cu-prod__fit { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; }
+.cu-prod__score { font: 600 22px/1 var(--font-display); }
+.cu-prod__verdict { font-size: 11px; color: var(--veu-forest); font-weight: 600; }
+
+/* explore */
+.cu-pills--start { justify-content: flex-start; }
+.cu-prod--static { cursor: default; }
+.cu-prod__verdict--inline { margin-top: 2px; }
+.cu-app a.cu-trybtn { flex-shrink: 0; min-height: var(--tap); padding: 0 16px; border-radius: 22px; background: var(--veu-crimson); color: #fff; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; }
+.cu-app a.cu-trybtn:hover { background: var(--veu-crimson-deep); color: #fff; }
+
 /* application */
 .cu-appcard { overflow: hidden; }
 .cu-approw { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 12px 6px 16px; }

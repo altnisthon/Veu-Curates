@@ -1,16 +1,18 @@
 // Shade Studio.
 // On entry: her bare face and "Your face" (a tone wheel for skin and lips: cool to warm, light to deep).
-// Tapping Lips, Cheeks or Eyes zooms in and brings out the shades for that area: placeholder shades, finish,
-// look, fit score with a plain-English reason, and The science. Only areas the user has opened wear makeup.
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+// Tapping Lips, Cheeks or Eyes zooms in; the user then chooses a product from the menu (or arrives from Explore
+// with one picked). Then: fit score with a plain-English reason, finish, look and The science.
+// Only areas with a chosen product wear makeup.
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { FINISHES, LEANS, LOOKS, areaBases, hexToLch, normaliseHex, perceived, scoreShade } from '../../lib/colour';
 import { ScreenHeader } from '../components/Chrome';
 import FaceStage from '../components/FaceStage';
+import ProductMenu from '../components/ProductMenu';
 import ToneWheel from '../components/ToneWheel';
 import { leanById, scoringLean } from '../lib/leans';
 import { usePrefs } from '../lib/prefs';
-import { SHADES, shortName } from '../lib/shades';
+import { AREA_PRODUCT, BY_ID, canTry, tryable } from '../lib/catalogue';
 import { HER, describe, hexToWheel, wheelToHex } from '../lib/tone';
 import { track } from '../lib/track';
 
@@ -61,9 +63,15 @@ export default function Studio() {
   const [face, setFace] = useState({ ...EMPTY_TONE, ...(prefs.tone || {}) });
   const [wheelPart, setWheelPart] = useState('skin');
   const [area, setArea] = useState(null); // nothing picked yet: no shades, no makeup
-  const [opened, setOpened] = useState({ lips: false, cheeks: false, eyes: false });
   const [zoomed, setZoomed] = useState(false);
-  const [sel, setSel] = useState({ lips: 0, cheeks: 0, eyes: 0 });
+  // chosen product id per area; saved on the device so the look survives a trip to Explore and back
+  const [sel, setSel] = useState(() => {
+    const saved = prefs.picks || {};
+    const ok = (id) => (BY_ID.get(id)?.hex ? id : null);
+    return { lips: ok(saved.lips), cheeks: ok(saved.cheeks), eyes: ok(saved.eyes) };
+  });
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [params, setParams] = useSearchParams();
   const [finOverride, setFinOverride] = useState({ lips: null, cheeks: null, eyes: null });
   const [sciOpen, setSciOpen] = useState(false);
   const look = prefs.look ?? 1;
@@ -102,42 +110,55 @@ export default function Studio() {
   };
   const custom = !!(face.skinHex || face.lipHex || face.skin || face.lips);
 
-  // ---------- shades ----------
-  const finOf = (a) => finOverride[a] ?? SHADES[a][sel[a]].fin;
-  const onYou = (a) => perceived(a, SHADES[a][sel[a]].hex, finOf(a), bases[a]);
-  // Areas the user has opened wear their picked shade, so the full face builds up the whole look.
+  // ---------- products ----------
+  const productOf = (a) => (sel[a] ? BY_ID.get(sel[a]) : null);
+  const finOf = (a) => finOverride[a] ?? productOf(a).fin;
+  const onYou = (a) => perceived(a, productOf(a).hex, finOf(a), bases[a]);
+  // Areas with a chosen product wear it, so the full face builds up the whole look.
   const current = { ...bases };
-  ['lips', 'cheeks', 'eyes'].forEach((a) => { if (opened[a]) current[a] = onYou(a); });
+  ['lips', 'cheeks', 'eyes'].forEach((a) => { if (productOf(a)) current[a] = onYou(a); });
 
-  // Everything below only exists once an area is picked.
-  const shade = area && SHADES[area][sel[area]];
-  const fin = area && finOf(area);
-  const per = area ? current[area] : user.skin;
-  const fit = area && scoreShade({ area, baseHex: bases[area], perceivedHex: per, lean: scoring, look });
+  // Everything below only exists once an area is picked, and the fit once a product is chosen.
+  const shade = area ? productOf(area) : null;
+  const fin = shade ? finOf(area) : null;
+  const per = shade ? current[area] : area ? bases[area] : user.skin;
+  const fit = shade && scoreShade({ area, baseHex: bases[area], perceivedHex: per, lean: scoring, look });
   const P = fit ? fit.lch : [0, 0, 0];
-  const dL = area ? P[0] - hexToLch(bases[area])[0] : 0;
+  const dL = fit ? P[0] - hexToLch(bases[area])[0] : 0;
   const leanWord = lean && lean.id !== 'not_sure' ? `your ${lean.id} lean` : 'a neutral start';
 
-  const logView = (a, i, extra = {}) => {
-    const s = SHADES[a][i];
-    track('shade_viewed', { area: a, shade_key: s.id, brand: s.brand, shade: s.shade, placeholder: true, ...extra });
+  // Fit for any product as it would look on this face (for the menu), at its own default finish.
+  const scoreFor = useCallback((p) => scoreShade({
+    area: p.area, baseHex: bases[p.area], perceivedHex: perceived(p.area, p.hex, p.fin, bases[p.area]), lean: scoring, look,
+  }), [bases.lips, bases.cheeks, bases.eyes, scoring, look]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const choose = (p, from) => {
+    const next = { ...sel, [p.area]: p.id };
+    setSel(next);
+    update({ picks: next });
+    setFinOverride((f) => ({ ...f, [p.area]: null }));
+    track('shade_viewed', { area: p.area, product_key: p.id, brand: p.brand, shade: p.shade, placeholder: true, from });
   };
+
+  // Arriving from Explore (/studio?product=ID): zoom into that area wearing the product.
+  useEffect(() => {
+    const p = BY_ID.get(params.get('product'));
+    if (!p || !canTry(p)) return;
+    setArea(p.area);
+    setZoomed(true);
+    choose(p, 'explore');
+    setParams({}, { replace: true });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pickArea = (id) => {
     setArea(id);
-    setOpened((o) => ({ ...o, [id]: true }));
     setZoomed(true);
-    logView(id, sel[id], { from: 'area' });
   };
-  const pickShade = (i) => {
-    setSel((s) => ({ ...s, [area]: i }));
-    setFinOverride((f) => ({ ...f, [area]: null }));
-    logView(area, i, { from: 'chip' });
-  };
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
   const pickFinish = (i) => setFinOverride((f) => ({ ...f, [area]: i }));
   const pickLook = (i) => update({ look: i });
 
-  const science = !area ? [] : [
+  const science = !fit ? [] : [
     { label: 'Lightness (L)', value: String(Math.round(P[0])), note: 'Higher is lighter, lower is deeper. 0 is black, 100 is white.' },
     { label: 'Chroma (C)', value: String(Math.round(P[1])), note: 'Higher is brighter, lower is more muted.' },
     { label: 'Hue angle (h)', value: `${Math.round(P[2])}°`, note: 'Where the colour sits on the colour wheel. Around 25° to 75° reads warm.' },
@@ -160,52 +181,69 @@ export default function Studio() {
               <button key={a.id} type="button" className={`cu-pill-btn${area === a.id ? ' is-on' : ''}`} aria-pressed={area === a.id} onClick={() => pickArea(a.id)}>{a.label}</button>
             ))}
           </div>
-          {!area && <p className="cu-fine cu-center cu-studio-hint">Tap lips, cheeks or eyes to see shades on her.</p>}
+  {!area && <p className="cu-fine cu-center cu-studio-hint">Tap lips, cheeks or eyes, then choose a product to try on her.</p>}
         </div>
 
         <div className="cu-pad-x">
           <FaceStage area={area} zoomed={zoomed} onToggleZoom={() => setZoomed((z) => !z)} current={current} defaults={DEFAULT_BASES}
-            label={area ? `Wearing ${shade.brand} ${shade.shade} on the ${area}.` : 'Bare face, matched to your skin and lips.'}
-            chip={area ? { hex: per, text: `On you ${per}` } : { hex: user.skin, text: `Skin ${user.skin}` }} />
+            label={shade ? `Wearing ${shade.brand} ${shade.shade} on the ${area}.` : 'Bare face, matched to your skin and lips.'}
+            chip={shade ? { hex: per, text: `On you ${per}` } : { hex: user.skin, text: `Skin ${user.skin}` }} />
         </div>
 
         {area && (<>
-        {/* the shade */}
+        {/* the product */}
         <section className="cu-pad-x" aria-labelledby="shade-name">
-          <div className="glass cu-shadecard">
-            <div className="cu-shadecard__head">
-              <div className="cu-shadecard__titles">
-                <span className="cu-eyebrow">{shade.brand}</span>
-                <h2 id="shade-name" className="cu-shadecard__name">{shade.name}</h2>
-                <span className="cu-shadecard__sub">{shade.shade} · {FINISHES[fin]}</span>
+          {shade ? (
+            <div className="glass cu-shadecard">
+              <div className="cu-shadecard__head">
+                <span className="cu-prod__tile cu-prod__tile--lg"><span className="cu-prod__swatch" style={{ background: shade.hex }} /></span>
+                <div className="cu-shadecard__titles">
+                  <span className="cu-eyebrow">{shade.brand}</span>
+                  <h2 id="shade-name" className="cu-shadecard__name">{shade.name}</h2>
+                  <span className="cu-shadecard__sub">{shade.shade} · {FINISHES[fin]}</span>
+                </div>
               </div>
-              <span className="cu-tag cu-tag--quiet">Placeholder colour</span>
-            </div>
-
-            <div className="cu-chips-scroll" role="group" aria-label={`Choose a ${AREAS.find((a) => a.id === area).product}`}>
-              {SHADES[area].map((s, i) => (
-                <button key={s.id} type="button" className={`cu-shadechip${sel[area] === i ? ' is-on' : ''}`} aria-pressed={sel[area] === i}
-                  aria-label={`${s.brand} ${s.shade}`} onClick={() => pickShade(i)}>
-                  {/* neutral tile so the product colour reads true */}
-                  <span className="cu-shadechip__tile"><span className="cu-shadechip__swatch" style={{ background: s.hex }} /></span>
-                  <span className="cu-shadechip__label">{shortName(s)}</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="cu-fit">
-              <div className="cu-fit__row">
-                <span className="cu-fit__verdict">{fit.verdict} for {leanWord}</span>
-                <span className="cu-fit__score">{fit.score}</span>
+              <div className="cu-shadecard__actions">
+                <span className="cu-tag cu-tag--quiet">Placeholder colour</span>
+                {shade.price && <span className="cu-fine">{shade.price}{shade.where ? ` · ${shade.where}` : ''}</span>}
               </div>
-              <div className="cu-fit__bar" aria-hidden="true"><span style={{ width: `${fit.score}%` }} /></div>
-              <p className="cu-fit__reason">{fit.reason}</p>
-              <p className="cu-fine">Fit score out of 100: how well this shade, as it looks on you, suits {leanWord} and the look you picked.</p>
-              {!lean && <Link to="/undertone" className="cu-link">Pick your undertone for a truer score</Link>}
+
+              <div className="cu-fit">
+                <div className="cu-fit__row">
+                  <span className="cu-fit__verdict">{fit.verdict} for {leanWord}</span>
+                  <span className="cu-fit__score">{fit.score}</span>
+                </div>
+                <div className="cu-fit__bar" aria-hidden="true"><span style={{ width: `${fit.score}%` }} /></div>
+                <p className="cu-fit__reason">{fit.reason}</p>
+                <p className="cu-fine">Fit score out of 100: how well this shade, as it looks on you, suits {leanWord} and the look you picked.</p>
+                {!lean && <Link to="/undertone" className="cu-link">Pick your undertone for a truer score</Link>}
+              </div>
+              <div className="cu-shadecard__buttons">
+                <button type="button" className="btn-tint cu-btn" onClick={() => setMenuOpen(true)}>Try another {AREA_PRODUCT[area]}</button>
+                {shade.link && (
+                  <a href={shade.link} target="_blank" rel="noopener noreferrer" className="cu-link cu-center"
+                    onClick={() => track('product_clicked', { product_key: shade.id, brand: shade.brand, shade: shade.shade, from: 'studio' })}>
+                    Where to buy
+                  </a>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="glass cu-card cu-gap-s">
+              <h2 id="shade-name" className="cu-shadecard__name">Choose a {AREA_PRODUCT[area]}</h2>
+              <p className="cu-muted">
+                {tryable(area).length
+                  ? `Pick from ${tryable(area).length} ${AREA_PRODUCT[area]}s and see it on her, sorted by how well it suits you.`
+                  : `${AREA_PRODUCT[area][0].toUpperCase() + AREA_PRODUCT[area].slice(1)} swatches are coming soon, so there's nothing to try on yet.`}
+              </p>
+              {tryable(area).length
+                ? <button type="button" className="btn-primary cu-btn" onClick={() => setMenuOpen(true)}>Choose a product</button>
+                : <Link to={`/explore?area=${area}`} className="btn-tint cu-btn">Browse {AREA_PRODUCT[area]}s in Explore</Link>}
+            </div>
+          )}
         </section>
 
+        {shade && (<>
         {/* application */}
         <section className="cu-pad-x cu-gap-s" aria-labelledby="application">
           <h2 id="application" className="cu-section-label">Application</h2>
@@ -221,6 +259,7 @@ export default function Studio() {
           </div>
           <p className="cu-fine cu-pad-note">Finish changes how much colour shows. Look is the effect you're going for, and it shapes the fit score.</p>
         </section>
+        </>)}
         </>)}
 
         {/* your face */}
@@ -245,7 +284,7 @@ export default function Studio() {
         </section>
 
         {/* the science */}
-        {area && (
+        {shade && (
         <section className="cu-pad-x">
           <div className="glass cu-sci">
             <button type="button" className="cu-sci__toggle" aria-expanded={sciOpen} aria-controls="sci-panel" onClick={() => setSciOpen((o) => !o)}>
@@ -254,7 +293,7 @@ export default function Studio() {
             </button>
             {sciOpen && (
               <div id="sci-panel" className="cu-sci__panel">
-                <p className="cu-fine">The numbers behind {shortName(shade)} as it looks on you ({per}).</p>
+                <p className="cu-fine">The numbers behind {shade.shade} as it looks on you ({per}).</p>
                 {science.map((r) => (
                   <div key={r.label} className="cu-sci__row">
                     <div className="cu-sci__top"><span>{r.label}</span><span className="cu-sci__val">{r.value}</span></div>
@@ -270,6 +309,8 @@ export default function Studio() {
         <p className="cu-fine cu-pad-x cu-center">
           Screens aren't colour-calibrated, so previews are close approximations. Product colours here are placeholders until our swatch research is in.
         </p>
+        <ProductMenu open={menuOpen} onClose={closeMenu} area={area} selectedId={area ? sel[area] : null} scoreFor={scoreFor}
+          onPick={(p) => { choose(p, 'menu'); setMenuOpen(false); }} />
       </div>
     </div>
   );

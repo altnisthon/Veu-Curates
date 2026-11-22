@@ -49,6 +49,12 @@ export const hexToWheel = (part, hex) => {
   return clampToDisc({ x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)) });
 };
 
+// The user's skin and lips from their saved tone (prefs.tone), or her colouring when nothing is saved.
+export const userTones = (tone = {}) => ({
+  skin: tone.skinHex || (tone.skin ? wheelToHex('skin', tone.skin) : HER.skin),
+  lips: tone.lipHex || (tone.lips ? wheelToHex('lips', tone.lips) : HER.lips),
+});
+
 // Plain-English reading of a point.
 export const describe = ({ x, y }) => ({
   undertone: x < -0.33 ? 'Cool' : x > 0.33 ? 'Warm' : 'Neutral',
