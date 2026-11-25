@@ -1,0 +1,98 @@
+[
+ {
+  "angle": -90,
+  "name": "m90",
+  "skin": "#BF8D73",
+  "lips": "#845452",
+  "cheek": "#BD8D78",
+  "lid": "#AF978F"
+ },
+ {
+  "angle": -75,
+  "name": "m75",
+  "skin": "#B98872",
+  "lips": "#9D6767",
+  "cheek": "#DEA892",
+  "lid": "#BC8E7C"
+ },
+ {
+  "angle": -60,
+  "name": "m60",
+  "skin": "#C18F76",
+  "lips": "#8F5855",
+  "cheek": "#D49E85",
+  "lid": "#A97C69"
+ },
+ {
+  "angle": -45,
+  "name": "m45",
+  "skin": "#BE8D77",
+  "lips": "#905551",
+  "cheek": "#CE9B84",
+  "lid": "#A17563"
+ },
+ {
+  "angle": -30,
+  "name": "m30",
+  "skin": "#C08F78",
+  "lips": "#925651",
+  "cheek": "#CF9E87",
+  "lid": "#A97D6B"
+ },
+ {
+  "angle": -15,
+  "name": "m15",
+  "skin": "#BF8D77",
+  "lips": "#9B5B56",
+  "cheek": "#D29E87",
+  "lid": "#B48471"
+ },
+ {
+  "angle": 15,
+  "name": "p15",
+  "skin": "#BA8973",
+  "lips": "#9B5A56",
+  "cheek": "#D3A088",
+  "lid": "#B3836F"
+ },
+ {
+  "angle": 30,
+  "name": "p30",
+  "skin": "#BC8B74",
+  "lips": "#9E5C58",
+  "cheek": "#DAA68E",
+  "lid": "#B4846F"
+ },
+ {
+  "angle": 45,
+  "name": "p45",
+  "skin": "#BA8A74",
+  "lips": "#9F615D",
+  "cheek": "#DDA992",
+  "lid": "#B38673"
+ },
+ {
+  "angle": 60,
+  "name": "p60",
+  "skin": "#BE8C74",
+  "lips": "#9A5D5A",
+  "cheek": "#E5AF95",
+  "lid": "#B58571"
+ },
+ {
+  "angle": 75,
+  "name": "p75",
+  "skin": "#BD8C74",
+  "lips": "#99615F",
+  "cheek": "#DFA990",
+  "lid": "#A57B68"
+ },
+ {
+  "angle": 90,
+  "name": "p90",
+  "skin": "#BA8871",
+  "lips": "#8E5857",
+  "cheek": "#D09980",
+  "lid": "#B39387"
+ }
+]
